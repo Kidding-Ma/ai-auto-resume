@@ -1,0 +1,22 @@
+# All personal input, working files and results stay local.
+/materials/*
+!/materials/README.md
+/workspace/*
+!/workspace/README.md
+/output/*
+!/output/README.md
+/.private/
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.xdv
+__pycache__/
+.env
+.env.*
+*.key
+*.pem
+.DS_Store
+Thumbs.db

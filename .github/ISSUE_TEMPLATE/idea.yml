@@ -1,0 +1,9 @@
+name: 希望增加什么
+description: 分享一个让做简历更简单的想法
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: 你希望解决什么问题？
+    validations:
+      required: true

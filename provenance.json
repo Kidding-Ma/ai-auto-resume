@@ -1,0 +1,21 @@
+{
+  "template": {
+    "source": "https://raw.githubusercontent.com/billryan/resume/master/resume.cls",
+    "retrieved": "2026-11-02",
+    "upstream_sha256": "d08b33c163549c578fc02fe02c06b275b0392a637eb1c2b8f441f3b798670528",
+    "modified": true
+  },
+  "skill": {
+    "source": "https://github.com/auberginewly/resume-project-miner",
+    "snapshot_sha256": {
+      "LICENSE": "920868bea80a4f67fa225b1cd57aa33f21791f2f5e3c16e8517c5fa523768c3f",
+      "README.md": "f71becd5e1ef88329888fccacc50fc2e8e69d279f52ffdeaed756cc119e5f465",
+      "SKILL.md": "53d27a675d5f6a34d9380866282d38a78cfd3ee9344096735258bd9d21058227",
+      "agents/openai.yaml": "99b69a38822e490683219c9885b67768b6cc6b84071fbc742d00800140e9b134",
+      "references/evidence_rules.md": "74951e9e213d42cf0f7e05c78d1d0dd84114bf3cfe384dd7d224156c40321811",
+      "references/resume_writing_rules.md": "b5dccd6342c8a06bd914021dfa3bb98f167a9e435b9a4730147fabd370684930",
+      "references/role_profiles.md": "e283096f205bf928122f303a0eca4dfc6a9bb96ea81ec0e9afb9518697b9d6ed",
+      "scripts/collect_repo_evidence.sh": "973368444efd270ddf509554e9c8c21855d0744f6096db287a530122f640f602"
+    }
+  }
+}

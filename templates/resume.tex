@@ -1,0 +1,44 @@
+% !TeX program = xelatex
+% Public demo only. Generate personal versions in output/, never here.
+\documentclass{resume}
+\usepackage[UTF8,fontset=fandol]{ctex}
+\hypersetup{pdfauthor={},pdftitle={Resume}}
+\begin{document}
+\pagenumbering{gobble}
+\name{林小满}
+\begin{center}
+  后端开发实习 \quad | \quad \href{mailto:lin@example.com}{lin@example.com}
+\end{center}
+\vspace{-1ex}
+
+\section{教育背景}
+\datedsubsection{\textbf{示例大学} \quad 计算机科学与技术 · 本科}{2022.09 -- 2026.06}
+主修课程：数据结构、数据库系统、计算机网络、操作系统
+
+\section{专业技能}
+\begin{itemize}
+  \item 熟悉 Java 基础，能够使用 Spring Boot 开发 REST 接口并编写参数与权限校验。
+  \item 使用 MySQL 设计数据表与索引，理解事务、唯一约束与基本查询优化方法。
+  \item 使用 Redis 实现缓存与过期控制，使用 Git 管理代码、定位变更。
+\end{itemize}
+
+\section{实习经历}
+\datedsubsection{\textbf{示例科技} \quad 开发实习生}{2025.07 -- 2025.09}
+\begin{itemize}
+  \item 参与内部工单接口开发，完善创建、分配与处理状态的流转校验，减少非法状态进入后续处理流程。
+  \item 在查询与更新接口补充角色权限检查，明确不同角色的数据访问范围。
+  \item 针对状态流转和越权访问场景编写接口回归用例，支持后续功能修改后的行为检查。
+\end{itemize}
+
+\section{项目经历}
+\datedsubsection{\textbf{校园预约系统} \quad 课程项目}{2025.03 -- 2025.06}
+\textbf{技术栈：}Java、Spring Boot、MySQL、Redis
+\begin{itemize}
+  \item 面向校园场地预约场景，实现创建、查询与取消预约的接口，完成从提交到状态查看的基本流程。
+  \item 设计预约记录与时段数据表，通过事务与唯一约束校验同一时段的重复提交，保持预约数据一致。
+  \item 将异常情况统一转换为明确的接口响应，方便前端区分时段冲突、权限不足和参数错误。
+\end{itemize}
+
+\section{补充说明}
+本页为虚构示例，仅展示排版。人物、机构与经历不对应真实求职者。
+\end{document}

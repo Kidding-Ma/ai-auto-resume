@@ -1,0 +1,4 @@
+interface:
+  display_name: "Resume Project Miner"
+  short_description: "从真实 Git 代码与提交证据挖掘可验证的中文简历项目亮点"
+  default_prompt: "Use $resume-project-miner to scan this repository and draft evidence-backed Chinese resume materials."

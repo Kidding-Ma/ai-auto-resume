@@ -1,0 +1,20 @@
+name: 使用遇到问题
+description: 告诉我们卡在哪一步，请先删掉个人信息
+body:
+  - type: textarea
+    id: steps
+    attributes:
+      label: 做了什么，卡在哪里？
+      description: 写清操作步骤、预期结果和实际结果。
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: 使用环境
+      description: 系统、AI 助手、MiKTeX 版本（如知道）。
+  - type: textarea
+    id: error
+    attributes:
+      label: 报错信息
+      description: 只贴相关报错，删除姓名、邮箱、本地路径和敏感内容，不上传真实简历。
