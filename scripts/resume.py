@@ -7,6 +7,12 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+WORKSPACE = None
+
+def workspace_root():
+    return WORKSPACE if WORKSPACE is not None else ROOT
+
+
 PRIVATE = ('materials/', 'workspace/', 'output/', '.private/')
 PUBLIC_DIRS = ('docs/', 'templates/', 'examples/', 'skills/', 'licenses/', 'scripts/', '.vscode/', '.github/', 'tests/')
 PUBLIC_FILES = {'README.md', 'AGENTS.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md', 'CONTRIBUTING.md', '.gitignore', '.gitattributes', 'provenance.json'}
@@ -22,16 +28,18 @@ def doctor():
 
 
 def init():
-    for directory in ('materials', 'workspace', 'output'):
-        (ROOT / directory).mkdir(exist_ok=True)
+    destination = workspace_root() / 'output'
+    if destination.is_symlink():
+        raise ValueError('output must not be a symlink')
+    destination.mkdir(exist_ok=True)
     for name in ('resume.tex', 'resume.cls'):
-        dest = ROOT / 'output' / name
+        dest = destination / name
         if not dest.exists():
             shutil.copyfile(ROOT / 'templates' / name, dest)
-            print('初始化:', dest.relative_to(ROOT))
+            print('初始化:', dest)
         else:
-            print('保留已有文件:', dest.relative_to(ROOT))
-    print('初始 tex 含虚构示例。请让 AI 依据 materials 改写后再投递。')
+            print('保留已有文件:', dest)
+    print('初始 tex 含虚构示例。请让 AI 依据工作区材料改写后再投递。')
     return 0
 
 
@@ -82,11 +90,11 @@ def compile_at(directory):
 
 
 def build():
-    return compile_at(ROOT / 'output')
+    return compile_at(workspace_root() / 'output')
 
 
 def demo():
-    directory = ROOT / 'workspace' / 'demo'
+    directory = ROOT / 'output' / '.demo'
     directory.mkdir(parents=True, exist_ok=True)
     for name in ('resume.tex', 'resume.cls'):
         shutil.copyfile(ROOT / 'templates' / name, directory / name)
@@ -97,8 +105,6 @@ def inspect_paths(paths):
     problems = []
     for name in paths:
         name = name.replace('\\', '/')
-        if name in {'materials/README.md', 'workspace/README.md', 'output/README.md'}:
-            continue
         if name.startswith(PRIVATE):
             problems.append((name, '私人文件正在被 Git 跟踪'))
             continue
@@ -140,7 +146,13 @@ def privacy():
 def main():
     parser = argparse.ArgumentParser(description='AI 自动生成简历：本地辅助工具')
     parser.add_argument('command', choices=['doctor', 'init', 'build', 'demo', 'privacy'])
+    parser.add_argument('--workspace', type=Path, help='材料所在的工作区；默认使用项目目录')
     args = parser.parse_args()
+    global WORKSPACE
+    if args.workspace is not None:
+        WORKSPACE = args.workspace.resolve()
+        if not WORKSPACE.is_dir():
+            parser.error('工作区目录不存在')
     return globals()[args.command]()
 
 

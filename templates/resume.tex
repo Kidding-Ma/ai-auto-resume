@@ -2,13 +2,27 @@
 % Public demo only. Generate personal versions in output/, never here.
 \documentclass{resume}
 \usepackage[UTF8,fontset=fandol]{ctex}
+\usepackage{graphicx}
 \hypersetup{pdfauthor={},pdftitle={Resume}}
+% Optional personal photo: output/photo.jpg or output/photo.png.
+\newcommand{\resumeidentity}{%
+  \name{林小满}
+  \begin{center}
+    后端开发实习 \quad | \quad \href{mailto:lin@example.com}{lin@example.com}
+  \end{center}
+}
+\newcommand{\resumewithphoto}[1]{%
+  \noindent\begin{minipage}[c]{0.78\textwidth}
+    \resumeidentity
+  \end{minipage}\hfill
+  \begin{minipage}[c]{0.18\textwidth}
+    \raggedleft\includegraphics[width=2.2cm,height=2.8cm,keepaspectratio]{#1}
+  \end{minipage}\par
+}
 \begin{document}
 \pagenumbering{gobble}
-\name{林小满}
-\begin{center}
-  后端开发实习 \quad | \quad \href{mailto:lin@example.com}{lin@example.com}
-\end{center}
+\IfFileExists{./photo.jpg}{\resumewithphoto{./photo.jpg}}{%
+  \IfFileExists{./photo.png}{\resumewithphoto{./photo.png}}{\resumeidentity}}
 \vspace{-1ex}
 
 \section{教育背景}

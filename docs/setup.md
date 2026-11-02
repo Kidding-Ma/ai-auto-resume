@@ -39,17 +39,21 @@ LaTeX 负责把简历文字排成 PDF。按电脑系统选一个即可：
 1. [VS Code](https://code.visualstudio.com/)。
 2. 在 VS Code 扩展中搜索 **LaTeX Workshop**，作者 **James Yu**。
 
-用 VS Code 打开整个项目文件夹。打开生成的 `output/resume.tex`，在左侧 TeX 面板点击 **Build LaTeX project**，编译后点击 **View LaTeX PDF** 查看。
+用 VS Code 打开保存材料和 output 的文件夹。打开生成的 `output/resume.tex`，在左侧 TeX 面板点击 **Build LaTeX project**，编译后点击 **View LaTeX PDF** 查看。
 
-项目附带直接运行 XeLaTeX 的配置，不需要为这套配置另装 Perl。已有可用配置时保留即可。[插件说明](https://github.com/James-Yu/LaTeX-Workshop/wiki/Install)
+本项目附带直接运行 XeLaTeX 的配置，不需要为这套配置另装 Perl。若模板下载在子文件夹中，让 AI 先检查当前工作区配置，必要时补充 XeLaTeX 编译方式。已有可用配置时保留即可。[插件说明](https://github.com/James-Yu/LaTeX-Workshop/wiki/Install)
 
 AI 直接运行命令生成 PDF 时，可以不装 VS Code 或插件。
 
 ## AI 助手怎么选
 
-使用你已有的、能读取本地文件和运行命令的 AI 助手即可。在助手中打开项目文件夹，让它先读 `AGENTS.md`。例如 [Codex 支持读取这个指引文件](https://developers.openai.com/codex/guides/agents-md/)。
+使用你已有的、能读取本地文件和运行命令的 AI 助手即可，不限定模型。打开材料所在的文件夹，把首页提示词发给它。
 
-如果它说看不到你电脑上的文件，换到支持本地工作区的使用方式。普通网页聊天窗口无法仅凭仓库链接操作电脑。
+DSH（DeepSeek Harness）、OpenCode 搭配 DeepSeek 等工具，都使用首页的同一段提示词，不用单独装简历插件。选择材料所在的文件夹作为工作区，允许助手读取材料并运行必要的编译命令即可。
+
+还没有助手时，可以参考 [DSH 官方入口](https://deepseek.com/harness/) 或 [OpenCode 官方文档](https://opencode.ai/docs/zh-cn/)。已有工具能用就继续用，不用为了写简历换模型。
+
+如果它说看不到你电脑上的文件，换到支持本地工作区的使用方式。只有聊天功能的窗口无法仅凭仓库链接操作电脑。
 
 ## 其他工具
 

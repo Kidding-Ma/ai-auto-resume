@@ -15,7 +15,7 @@ class HelpersTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp, patch.object(resume, 'ROOT', Path(tmp)):
             problems = resume.inspect_paths(['materials/cv.txt', 'output/resume.pdf', 'workspace/facts.md', 'unknown.txt'])
             self.assertEqual(len(problems), 4)
-            self.assertEqual(resume.inspect_paths(['materials/README.md', 'README.md', 'templates/resume.tex']), [])
+            self.assertEqual(resume.inspect_paths(['README.md', 'templates/resume.tex']), [])
 
     def test_init_preserves_personal_draft(self):
         with tempfile.TemporaryDirectory() as tmp, patch.object(resume, 'ROOT', Path(tmp)):
@@ -28,6 +28,34 @@ class HelpersTest(unittest.TestCase):
             resume.init()
             self.assertEqual((root / 'output/resume.tex').read_text(), 'my own work')
             self.assertTrue((root / 'output/resume.cls').exists())
+
+    def test_external_workspace_keeps_materials_in_place(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = Path(tmp)
+            material = workspace / '旧简历.txt'
+            material.write_text('Original material', encoding='utf-8')
+            with patch.object(resume, 'WORKSPACE', workspace):
+                resume.init()
+                self.assertTrue((workspace / 'output/resume.cls').is_file())
+                self.assertEqual(material.read_text(encoding='utf-8'), 'Original material')
+                self.assertFalse((workspace / 'materials').exists())
+                self.assertFalse((workspace / 'workspace').exists())
+                with patch.object(resume, 'compile_at', return_value=0) as compile_at:
+                    resume.build()
+                    compile_at.assert_called_once_with(workspace / 'output')
+
+    def test_git_ignores_new_materials_and_allows_public_files(self):
+        import subprocess
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = Path(tmp)
+            subprocess.run(['git', 'init', '-q', str(workspace)], check=True)
+            (workspace / '.gitignore').write_bytes((resume.ROOT / '.gitignore').read_bytes())
+            paths = ['旧简历.pdf', '笔记.txt', '经历.docx', '项目/说明.md', 'output/resume.pdf', 'docs/私人材料.txt']
+            result = subprocess.run(['git', 'check-ignore', '--stdin'], cwd=workspace,
+                                    input='\n'.join(paths)+'\n', encoding='utf-8', capture_output=True)
+            self.assertEqual(len(result.stdout.splitlines()), len(paths))
+            public = subprocess.run(['git', 'check-ignore', 'README.md', 'templates/resume.tex'], cwd=workspace, capture_output=True)
+            self.assertEqual(public.returncode, 1)
 
     def test_failed_build_does_not_leave_stale_pdf(self):
         with tempfile.TemporaryDirectory() as tmp:
