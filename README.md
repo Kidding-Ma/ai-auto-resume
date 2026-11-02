@@ -33,7 +33,7 @@ AI 自动生成简历工作流，简单又好用。
 
 完成后打开 `output/resume.pdf`，核对信息就可以投递。
 
-推荐使用 **VS Code + Codex 插件**。已有 OpenCode、DeepSeek Harness 或其他 AI 助手也可以，只要能读取本地文件、运行命令，就用上面这段提示词。
+推荐使用 **VS Code + Codex**。已有 OpenCode、DeepSeek Harness 或其他 AI 助手也可以，只要能读取本地文件、运行命令，就用上面这段提示词。
 
 已有 LaTeX、编辑器和插件直接用，不用重复安装。
 
