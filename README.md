@@ -1,10 +1,12 @@
 # AI 自动生成简历
 
-<a href="docs/preview.pdf"><img src="docs/preview.png" alt="简历效果预览，内容全部虚构" width="600"></a>
+下面是虚构示例，姓名、学校、公司和经历都不对应真实求职者。
+
+[![简历效果预览](docs/preview.png)](docs/preview.pdf)
 
 **把个人情况交给 AI，自动生成 PDF 简历。不会写简历也能开始。**
 
-LaTeX 排版，支持添加照片。[查看示例 PDF](docs/preview.pdf)（内容全部虚构）
+使用 LaTeX 排版。[查看完整 PDF](docs/preview.pdf)
 
 ## 怎么用
 
@@ -14,7 +16,8 @@ LaTeX 排版，支持添加照片。[查看示例 PDF](docs/preview.pdf)（内�
 教育：学校、专业、学历、入学和毕业时间
 经历：实习、课程作业、比赛、社团，自己做了什么
 技能：学过什么、实际用过什么
-姓名和联系方式：想投什么岗位
+姓名和联系方式：按需填写
+求职意向：有就写，没有可不填
 ```
 
 有什么写什么，没有的留空。想加照片，就把照片也放进去。
@@ -30,9 +33,11 @@ LaTeX 排版，支持添加照片。[查看示例 PDF](docs/preview.pdf)（内�
 
 完成后打开 `output/resume.pdf`，核对信息就可以投递。
 
-DSH（DeepSeek Harness）、OpenCode 搭配 DeepSeek 等能读文件、运行命令的助手，都使用这段提示词。不用换模型，不用另装简历插件。已有 LaTeX、VS Code 和插件直接用。
+推荐使用 **VS Code + Codex 插件**。已有 OpenCode、DeepSeek Harness 或其他 AI 助手也可以，只要能读取本地文件、运行命令，就用上面这段提示词。
 
-想修改，继续说：“压到一页”“按这份招聘要求改一版”“加上我的照片”。
+已有 LaTeX、编辑器和插件直接用，不用重复安装。
+
+想修改，继续说：“压到一页”或“按这份招聘要求改一版”。
 
 [材料怎么写](docs/materials.md) · [缺少工具怎么办](docs/setup.md) · [常见问题](docs/faq.md)
 

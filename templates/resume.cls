@@ -13,8 +13,7 @@
 \hypersetup{hidelinks}
 \RequirePackage{url}
 \urlstyle{tt}
-% use fontawesome
-% Icons omitted for portable local builds.
+% Contact links use plain text to avoid an icon-font dependency.
 % use xcolor for customizing color
 %\RequirePackage[usenames,dvipsnames]{xcolor}
 % loading fonts
@@ -78,23 +77,23 @@
 \newcommand{\phone}[1]{{#1}}
 % defines one's linkedin
 % usage: \linkedin{<linkedin>}
-\newcommand{\linkedin}[2][]{\faLinkedin\
+\newcommand{\linkedin}[2][]{%
   \ifthenelse{\isempty{#1}}%
     {\href{#2}{#2}}
     {\href{#2}{#1}}}
-\newcommand{\linkedinsquare}[2][]{\faLinkedinSquare\
+\newcommand{\linkedinsquare}[2][]{%
   \ifthenelse{\isempty{#1}}%
     {\href{#2}{#2}}
     {\href{#2}{#1}}}
 % defines one's GitHub
 % usage: \github{<github>}
-\newcommand{\github}[2][]{\faGithub\
+\newcommand{\github}[2][]{%
   \ifthenelse{\isempty{#1}}%
     {\href{#2}{#2}}
     {\href{#2}{#1}}}
 % defines one's homepage
 % usage: \homepage{<homepage>}
-\newcommand{\homepage}[2][]{\faLink\
+\newcommand{\homepage}[2][]{%
   \ifthenelse{\isempty{#1}}%
     {\href{#2}{#2}}
     {\href{#2}{#1}}}

@@ -47,13 +47,11 @@ AI 直接运行命令生成 PDF 时，可以不装 VS Code 或插件。
 
 ## AI 助手怎么选
 
-使用你已有的、能读取本地文件和运行命令的 AI 助手即可，不限定模型。打开材料所在的文件夹，把首页提示词发给它。
+推荐使用 **VS Code + Codex 插件**：用 VS Code 打开材料所在的文件夹，在 Codex 对话框里发送首页提示词。还没安装 Codex 时，按[官方安装说明](https://learn.chatgpt.com/docs/codex/ide)安装并登录；已经能用就跳过。
 
-DSH（DeepSeek Harness）、OpenCode 搭配 DeepSeek 等工具，都使用首页的同一段提示词，不用单独装简历插件。选择材料所在的文件夹作为工作区，允许助手读取材料并运行必要的编译命令即可。
+已有 [OpenCode](https://opencode.ai/docs/zh-cn/)、[DeepSeek Harness](https://deepseek.com/harness/) 或其他助手也可以。只要能读取本地文件、运行命令，就使用同一段提示词，不用换工具或模型。
 
-还没有助手时，可以参考 [DSH 官方入口](https://deepseek.com/harness/) 或 [OpenCode 官方文档](https://opencode.ai/docs/zh-cn/)。已有工具能用就继续用，不用为了写简历换模型。
-
-如果它说看不到你电脑上的文件，换到支持本地工作区的使用方式。只有聊天功能的窗口无法仅凭仓库链接操作电脑。
+如果助手只能聊天、不能操作本地文件，就无法直接完成这套自动流程。
 
 ## 其他工具
 

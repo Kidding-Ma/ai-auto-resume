@@ -15,6 +15,6 @@ https://cn.overleaf.com/latex/templates/chinese-resume-template-zhong-wen-jian-l
 
 Overleaf 展示页标注 CC BY 4.0。本项目从 billryan/resume 的 MIT 上游获取类文件，未复制该展示页的示例正文、照片、Adobe 字体或字体附件。templates/resume.tex 的虚构正文为本项目新增。
 
-本项目对 resume.cls 的修改：将相对字体文件路径改为发行版提供的 Latin Modern（按字体文件名加载，避免依赖系统字体缓存）；移除对 Fontin SmallCaps 文件的依赖；移除 FontAwesome 图标依赖；标题改为粗体并收紧章节间距。中文通过 ctex + Fandol 字体处理，不要求商业字体。resume.tex 新增可选照片排版，照片由用户自行提供，仅保存在本地 output 中。
+本项目对 resume.cls 的修改：将相对字体文件路径改为发行版提供的 Latin Modern（按字体文件名加载，避免依赖系统字体缓存）；移除对 Fontin SmallCaps 文件的依赖；移除 FontAwesome 图标依赖，个人主页和社交链接使用文字；标题改为粗体并收紧章节间距。中文通过 ctex + Fandol 字体处理，不要求商业字体。resume.tex 新增可选照片排版，照片由用户自行提供，仅保存在本地 output 中。
 
 宏包和字体由用户的 TeX 发行版按各自许可安装，不在本项目重新分发。
