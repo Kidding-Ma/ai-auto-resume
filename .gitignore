@@ -48,3 +48,5 @@
 !/templates/resume.cls
 !/templates/resume.tex
 !/tests/test_helpers.py
+!/docs/banner.svg
+!/docs/README.en.md

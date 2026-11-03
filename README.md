@@ -1,14 +1,22 @@
-# AI 自动生成简历
+<p align="center"><img src="docs/banner.svg" alt="AI Auto Resume" width="100%"></p>
 
-帮忙点点 star，这对我真的很重要，祝 offer 多多，谢谢。
+<h1 align="center">AI 自动生成简历</h1>
+<p align="center">把个人情况交给 AI，自动生成 PDF 简历。</p>
+<p align="center"><strong>简体中文</strong> · <a href="docs/README.en.md">English</a></p>
 
-AI 自动生成简历工作流，简单好用。
+<p align="center">
+  <a href="https://github.com/Kidding-Ma/ai-auto-resume/stargazers"><img src="https://img.shields.io/github/stars/Kidding-Ma/ai-auto-resume?style=flat&amp;logo=github&amp;color=14b8a6" alt="GitHub stars"></a>
+  <a href="https://github.com/Kidding-Ma/ai-auto-resume/actions/workflows/check.yml"><img src="https://github.com/Kidding-Ma/ai-auto-resume/actions/workflows/check.yml/badge.svg?branch=main" alt="Project checks"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-2563eb" alt="MIT license"></a>
+  <img src="https://img.shields.io/badge/Output-PDF-0f766e" alt="PDF output">
+  <img src="https://img.shields.io/badge/Typesetting-LaTeX-334155" alt="LaTeX typesetting">
+</p>
+
+<p align="center"><a href="#怎么用">开始使用</a> · <a href="docs/preview.pdf">查看简历</a> · <a href="docs/faq.md">常见问题</a></p>
 
 下面是虚构示例，姓名、学校、公司和经历都不对应真实求职者。
 
 [![简历效果预览](docs/preview.png)](docs/preview.pdf)
-
-**把个人情况交给 AI，自动生成 PDF 简历。**
 
 ## 怎么用
 
@@ -53,4 +61,4 @@ AI 自动生成简历工作流，简单好用。
 
 [MIT 许可](LICENSE) · [第三方许可](THIRD_PARTY_NOTICES.md) · [参与改进](CONTRIBUTING.md) · [反馈问题](https://github.com/Kidding-Ma/ai-auto-resume/issues/new/choose)
 
-觉得有用，欢迎点个 Star。
+帮忙点点 star，这对我真的很重要，祝 offer 多多，谢谢。
