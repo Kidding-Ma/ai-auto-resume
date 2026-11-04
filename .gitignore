@@ -28,11 +28,9 @@
 !/LICENSE
 !/README.md
 !/THIRD_PARTY_NOTICES.md
-!/docs/faq.md
-!/docs/materials.md
+!/docs/help.md
 !/docs/preview.pdf
 !/docs/preview.png
-!/docs/setup.md
 !/examples/materials.md
 !/licenses/billryan-resume-MIT.txt
 !/provenance.json
@@ -52,7 +50,6 @@
 !/docs/README.en.md
 
 !/docs/writing-rules.md
-!/docs/sources.md
 !/tests/test_layout.py
 !/licenses/reactive-resume-MIT.txt
 !/licenses/resume-skills-MIT.txt

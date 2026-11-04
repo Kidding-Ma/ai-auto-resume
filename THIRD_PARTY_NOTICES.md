@@ -27,6 +27,6 @@
 | [Reactive Resume](https://github.com/reactive-resume/reactive-resume)，Amruth Pillai | 先整理事实，按经历安排内容，用具体行动和真实结果写项目 | [MIT](licenses/reactive-resume-MIT.txt) |
 | [ResumeSkills](https://github.com/Paramchoudhary/ResumeSkills)，Resume Skills | 检查每条描述是否说清做了什么、怎么做、有什么结果 | [MIT](licenses/resume-skills-MIT.txt) |
 
-采用的方法已改写成适合中文简历的[写作规则](docs/writing-rules.md)，无需额外安装这两个项目。不采用编造数据、强求每条都有数字等做法。[查看具体参考范围](docs/sources.md)。
+采用的方法已改写成适合中文简历的[写作规则](docs/writing-rules.md)，无需额外安装这两个项目。保留有证据的行动、做法和结果，不采用“每条必须有数字”或无依据估算指标的建议；多轮访谈简化为最多一轮关键事实确认。参考版本记录在 [provenance.json](provenance.json)，使用者无需安装这些参考项目。
 
 本项目新增的代码和文档使用 [MIT 许可](LICENSE)。模板及引用内容按上面各自的许可使用，原作者不因此代表或认可本项目。[版本记录](provenance.json)保留了参考文件的标识。

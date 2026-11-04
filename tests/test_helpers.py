@@ -114,8 +114,8 @@ class HelpersTest(unittest.TestCase):
     def test_privacy_requires_exact_paths_even_inside_docs(self):
         with tempfile.TemporaryDirectory() as tmp, patch.object(resume, 'ROOT', Path(tmp).resolve()):
             root = Path(tmp).resolve()
-            (root / '.gitignore').write_text('*\n!/docs/\n!/docs/faq.md\n')
-            self.assertEqual(resume.inspect_paths(['docs/faq.md']), [])
+            (root / '.gitignore').write_text('*\n!/docs/\n!/docs/help.md\n')
+            self.assertEqual(resume.inspect_paths(['docs/help.md']), [])
             self.assertEqual(len(resume.inspect_paths(['docs/personal.txt', '../outside.txt'])), 2)
 
     def test_locked_pdf_is_preserved_and_new_result_has_its_own_record(self):

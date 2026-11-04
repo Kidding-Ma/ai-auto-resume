@@ -56,7 +56,7 @@ def doctor():
     print('工具目录:', ROOT)
     print('Python:', sys.version.split()[0])
     for command, required in [('xelatex', True), ('git', False), ('code', False), ('pdftoppm', False)]:
-        print(f'{command}: ' + ('OK' if shutil.which(command) else ('未找到，先检查已有 LaTeX 安装和 PATH；确实缺少时再补齐 XeLaTeX，见 docs/setup.md' if required else '未找到（可选）')))
+        print(f'{command}: ' + ('OK' if shutil.which(command) else ('未找到，先检查已有 LaTeX 安装和 PATH；确实缺少时再补齐 XeLaTeX，见 docs/help.md' if required else '未找到（可选）')))
     print('已有 LaTeX 环境、编辑器和插件可直接复用，无需重复安装；编译 PDF 不依赖 VS Code 或插件。')
     print('项目不调用 AI API；请在 AI 编程助手中阅读 AGENTS.md 后开始。')
     print('Word/TXT 读取不需要额外依赖；PDF 读取和预览可选用 PyMuPDF。')
@@ -111,7 +111,7 @@ def compile_at(directory):
             print('原 PDF 正被占用，本次结果将另存为:', pdf)
     compiler = shutil.which('xelatex')
     if not compiler:
-        print('未找到 XeLaTeX。先检查已有 LaTeX 安装和 PATH，缺少组件时在现有发行版补齐；确实没有环境再按 docs/setup.md 安装。本次没有生成新 PDF。')
+        print('未找到 XeLaTeX。先检查已有 LaTeX 安装和 PATH，缺少组件时在现有发行版补齐；确实没有环境再按 docs/help.md 安装。本次没有生成新 PDF。')
         return 1
     source = directory / 'resume.tex'
     if not source.exists():
