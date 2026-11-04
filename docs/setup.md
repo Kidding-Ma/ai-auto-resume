@@ -59,7 +59,7 @@ AI 直接运行命令生成 PDF 时，可以不装 VS Code 或插件。
 
 有 Python 时，可以让 AI 运行 `python scripts/resume.py doctor` 检查工具。分析项目的提交记录还需要 Git，已经装过就直接用。
 
-排版测试已在 Windows + MiKTeX 和 Linux + TeX Live 上通过。macOS 和不同 AI 助手尚未逐一实测，先让 AI 编译虚构示例，再处理个人简历。
+排版测试已在 Windows + MiKTeX、Linux + TeX Live 和 macOS + BasicTeX 上通过。Linux 和 macOS 有自动回归检查。不同 AI 助手仍需按指引执行；首次使用时先编译虚构示例，再处理个人简历。
 
 ## AI 读取 Word 乱码、PDF 预览缺字怎么办
 

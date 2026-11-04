@@ -56,7 +56,7 @@ The assistant selects sections from your evidence, omits generic summaries by de
 
 The template uses XeLaTeX. MiKTeX, TeX Live and MacTeX can provide it; let your assistant check what is already installed before adding anything. VS Code and a LaTeX extension are optional when your assistant compiles from the command line. Python 3.10+ is optional for the included helper scripts.
 
-PDF layout tests pass on Windows with MiKTeX and in Linux CI with TeX Live. Individual AI clients and macOS have not all been tested end to end.
+PDF layout tests pass on Windows with MiKTeX, Linux CI with TeX Live and macOS CI with BasicTeX. Individual AI clients have not all been tested end to end.
 
 More help in Chinese: [Materials](materials.md) · [Setup](setup.md) · [FAQ](faq.md).
 
