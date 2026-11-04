@@ -27,7 +27,7 @@ jobs:
       - name: Install PDF layout test tools
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends texlive-xetex texlive-lang-chinese texlive-fonts-recommended tex-gyre
+          sudo apt-get install -y --no-install-recommends texlive-xetex texlive-lang-chinese texlive-fonts-recommended tex-gyre fonts-texgyre
           python -m pip install PyMuPDF Pillow
       - name: Check page-centred names with JPG, PNG and no photo
         run: python -m unittest discover -s tests -p test_layout.py -v
