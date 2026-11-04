@@ -19,7 +19,7 @@ class LayoutTest(unittest.TestCase):
         from PIL import Image
         for photo in (None, 'photo.jpg', 'photo.png'):
             with self.subTest(photo=photo), tempfile.TemporaryDirectory() as tmp:
-                target = Path(tmp)
+                target = Path(tmp).resolve()
                 shutil.copyfile(ROOT / 'templates/resume.cls', target / 'resume.cls')
                 source = (ROOT / 'templates/resume.tex').read_text(encoding='utf-8')
                 # Use the fixed header; only replace the public body with sparse facts.
@@ -59,4 +59,5 @@ class LayoutTest(unittest.TestCase):
                         self.assertFalse(rect.intersects(name))
                         heading = page.search_for('教育经历')[0]
                         self.assertGreater(heading.y0, rect.y1)
+
 

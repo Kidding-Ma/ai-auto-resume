@@ -20,7 +20,7 @@ except ValueError:
 class MaterialTest(unittest.TestCase):
     def test_docx_unicode_and_table_order_without_extra_library(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
+            root = Path(tmp).resolve()
             source = root / '中文 材料.docx'
             body = """<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
               <w:body><w:p><w:r><w:t>姓名：测试人</w:t></w:r></w:p>
@@ -34,7 +34,7 @@ class MaterialTest(unittest.TestCase):
 
     def test_text_encodings_and_multiple_materials_do_not_overwrite(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
+            root = Path(tmp).resolve()
             first, second = root / 'first.txt', root / 'second.txt'
             first.write_bytes('教育：示例'.encode('utf-8-sig'))
             second.write_bytes('技能：中文'.encode('gb18030'))
@@ -46,7 +46,7 @@ class MaterialTest(unittest.TestCase):
 
     def test_empty_docx_is_not_silently_accepted(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
+            root = Path(tmp).resolve()
             source = root / 'empty.docx'
             with zipfile.ZipFile(source, 'w') as archive:
                 archive.writestr('word/document.xml', '<document/>')
@@ -78,7 +78,7 @@ class PDFCheckTest(unittest.TestCase):
 
     def test_valid_pdf_checks_and_renders(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
+            root = Path(tmp).resolve()
             self.fixture(root)
             self.assertEqual(resume.check_pdf(root), 0)
             data = json.loads((root / '.work/checks.json').read_text(encoding='utf-8'))
@@ -89,7 +89,7 @@ class PDFCheckTest(unittest.TestCase):
     def test_off_centre_and_obscured_name_are_rejected(self):
         for options in ({'offset': -40}, {'overlap': True}):
             with self.subTest(options=options), tempfile.TemporaryDirectory() as tmp:
-                root = Path(tmp)
+                root = Path(tmp).resolve()
                 self.fixture(root, **options)
                 self.assertEqual(resume.check_pdf(root, render=False), 1)
                 data = json.loads((root / '.work/checks.json').read_text(encoding='utf-8'))
@@ -98,7 +98,7 @@ class PDFCheckTest(unittest.TestCase):
 
     def test_missing_engine_removes_old_success_report(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
+            root = Path(tmp).resolve()
             (root / '.work').mkdir()
             report = root / '.work/checks.json'
             report.write_text('{"passed": true}')
@@ -109,7 +109,7 @@ class PDFCheckTest(unittest.TestCase):
 
     def test_failed_build_cannot_certify_an_old_pdf(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
+            root = Path(tmp).resolve()
             self.fixture(root)
             (root / '.work').mkdir()
             (root / '.work/build.json').write_text('{"status":"started","pdf":"resume.pdf","log":"resume.log"}')
@@ -120,7 +120,7 @@ class PDFCheckTest(unittest.TestCase):
     def test_changed_source_invalidates_previous_build(self):
         import hashlib
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
+            root = Path(tmp).resolve()
             self.fixture(root)
             (root / '.work').mkdir()
             state = {'status': 'compiled', 'pdf': 'resume.pdf', 'log': 'resume.log',

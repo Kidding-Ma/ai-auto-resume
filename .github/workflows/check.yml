@@ -47,7 +47,7 @@ jobs:
           fi
           echo "/Library/TeX/texbin" >> "$GITHUB_PATH"
           sudo /Library/TeX/texbin/tlmgr update --self
-          sudo /Library/TeX/texbin/tlmgr install xetex ctex fandol tex-gyre xltxtra xifthen titlesec enumitem hyperref
+          sudo /Library/TeX/texbin/tlmgr install xetex ctex fandol tex-gyre xltxtra realscripts xunicode xecjk zhnumber xifthen titlesec enumitem hyperref
           python -m pip install PyMuPDF Pillow
       - name: Check macOS template, text extraction and layout
         run: python -m unittest discover -s tests -v
