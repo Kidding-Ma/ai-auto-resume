@@ -19,7 +19,9 @@
 % loading fonts
 \RequirePackage{fontspec}
 % Main document font
+\IfFontExistsTF{texgyretermes-regular.otf}{%
 \setmainfont{texgyretermes-regular.otf}[BoldFont=texgyretermes-bold.otf,ItalicFont=texgyretermes-italic.otf,BoldItalicFont=texgyretermes-bolditalic.otf]
+}{\setmainfont{TeX Gyre Termes}}
 \RequirePackage[
 	a4paper,
 	left=0.7in,
