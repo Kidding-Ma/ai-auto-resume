@@ -6,6 +6,10 @@ import shutil
 import subprocess
 import sys
 import time
+import hashlib
+import json
+import zipfile
+import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKSPACE = None
@@ -52,6 +56,7 @@ def doctor():
         print(f'{command}: ' + ('OK' if shutil.which(command) else ('未找到，先检查已有 LaTeX 安装和 PATH；确实缺少时再补齐 XeLaTeX，见 docs/setup.md' if required else '未找到（可选）')))
     print('已有 LaTeX 环境、编辑器和插件可直接复用，无需重复安装；编译 PDF 不依赖 VS Code 或插件。')
     print('项目不调用 AI API；请在 AI 编程助手中阅读 AGENTS.md 后开始。')
+    print('Word/TXT 读取不需要额外依赖；PDF 读取和预览可选用 PyMuPDF。')
     return 0 if shutil.which('xelatex') else 1
 
 
@@ -71,7 +76,15 @@ def init():
 
 def compile_at(directory):
     directory = output_paths(directory)
+    work = work_directory(directory)
+    state_file = guard_path(work / 'build.json')
+    state = {'status': 'started', 'pdf': 'resume.pdf', 'log': 'resume.log'}
+    state_file.write_text(json.dumps(state), encoding='utf-8')
+    report = guard_path(work / 'checks.json')
+    if report.exists():
+        report.unlink()
     pdf = directory / 'resume.pdf'
+    job = 'resume'
     # Archive first: even a preflight failure must not leave an old PDF as output.
     if pdf.exists():
         backup = directory / '.previous'
@@ -80,7 +93,19 @@ def compile_at(directory):
         if previous.exists():
             previous = guard_path(backup / ('resume-' + str(time.time_ns()) + '.pdf'))
         shutil.copy2(pdf, previous)
-        pdf.unlink()
+        try:
+            pdf.unlink()
+        except PermissionError:
+            # Readers on Windows may lock the old PDF. Never call it a new result.
+            job = 'resume-optimized'
+            for ext in ('.pdf', '.log', '.aux', '.out'):
+                guard_path(directory / (job + ext))
+            pdf = directory / (job + '.pdf')
+            if pdf.exists():
+                saved = guard_path(backup / ('resume-optimized-' + str(time.time_ns()) + '.pdf'))
+                shutil.copy2(pdf, saved)
+                pdf.unlink()
+            print('原 PDF 正被占用，本次结果将另存为:', pdf)
     compiler = shutil.which('xelatex')
     if not compiler:
         print('未找到 XeLaTeX。先检查已有 LaTeX 安装和 PATH，缺少组件时在现有发行版补齐；确实没有环境再按 docs/setup.md 安装。本次没有生成新 PDF。')
@@ -90,6 +115,8 @@ def compile_at(directory):
         print('缺少 resume.tex，请先让 AI 生成源文件。')
         return 1
     args = [compiler, '-no-shell-escape', '-interaction=nonstopmode', '-halt-on-error', 'resume.tex']
+    if job != 'resume':
+        args.insert(-1, '-jobname=' + job)
     for _ in range(2):
         try:
             run = subprocess.run(args, cwd=directory, capture_output=True, timeout=240)
@@ -109,7 +136,7 @@ def compile_at(directory):
             pdf.unlink()
         print('编译器未生成有效 PDF。')
         return 1
-    logfile = directory / 'resume.log'
+    logfile = directory / (job + '.log')
     if not logfile.is_file():
         pdf.unlink()
         print('缺少编译日志，无法检查本次 PDF。')
@@ -123,6 +150,13 @@ def compile_at(directory):
     print('已编译:', pdf)
     if pages:
         print('页数:', pages.group(1))
+    state.update(status='compiled', pdf=pdf.name, log=logfile.name,
+                 source_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
+                 pdf_sha256=hashlib.sha256(pdf.read_bytes()).hexdigest())
+    cls = directory / 'resume.cls'
+    if cls.is_file():
+        state['class_sha256'] = hashlib.sha256(cls.read_bytes()).hexdigest()
+    state_file.write_text(json.dumps(state), encoding='utf-8')
     print('请打开 PDF 核对排版和事实；编译成功不代表经历已验证。')
     return 0
 
@@ -137,6 +171,167 @@ def demo():
     for name in ('resume.tex', 'resume.cls'):
         shutil.copyfile(ROOT / 'templates' / name, directory / name)
     return compile_at(directory)
+
+
+def work_directory(directory):
+    directory = output_paths(directory)
+    directory.mkdir(exist_ok=True)
+    work = guard_path(directory / '.work')
+    work.mkdir(exist_ok=True)
+    return work
+
+
+def pdf_library():
+    try:
+        import pymupdf
+        return pymupdf
+    except ImportError:
+        try:
+            import fitz
+            return fitz
+        except ImportError:
+            raise ValueError('缺少可选工具 PyMuPDF。可在当前 Python 中安装：python -m pip install PyMuPDF；也可用已有的 PDF 工具。')
+
+
+def extract_material(source, directory):
+    source = Path(source).resolve()
+    if not source.is_file():
+        raise ValueError('材料文件不存在')
+    suffix = source.suffix.lower()
+    if suffix == '.docx':
+        ns = {'w': 'http://schemas.openxmlformats.org/wordprocessingml/2006/main'}
+        lines = []
+        with zipfile.ZipFile(source) as archive:
+            parts = ['word/document.xml'] + sorted(n for n in archive.namelist()
+                if re.fullmatch(r'word/(?:header\d+|footer\d+|footnotes|endnotes)\.xml', n))
+            for part in parts:
+                for para in ET.fromstring(archive.read(part)).findall('.//w:p', ns):
+                    text = ''.join(node.text or '' for node in para.findall('.//w:t', ns))
+                    if text.strip():
+                        lines.append(text)
+            has_images = any(n.startswith('word/media/') for n in archive.namelist())
+        text = '\n'.join(lines)
+        if has_images:
+            print('Word 中有图片：文字提取不等于识别图片，AI 需要另行查看。')
+    elif suffix in {'.txt', '.md'}:
+        data = source.read_bytes()
+        try:
+            text = data.decode('utf-8-sig')
+        except UnicodeDecodeError:
+            text = data.decode('gb18030')
+    elif suffix == '.pdf':
+        engine = pdf_library()
+        with engine.open(source) as doc:
+            text = '\n'.join(page.get_text() for page in doc)
+        if len(text.strip()) < 20:
+            raise ValueError('PDF 提取出的文字太少，可能是扫描件，需要识别图片文字，不能当作材料为空。')
+    else:
+        raise ValueError('脚本支持 DOCX、TXT、MD 和有文字的 PDF；其他格式请用已有工具读取。')
+    if not text.strip():
+        raise ValueError('没有提取到文字，请检查材料是否只有图片。')
+    work = work_directory(directory)
+    key = hashlib.sha256(str(source).encode('utf-8')).hexdigest()[:12]
+    target = guard_path(work / ('material-' + key + '.txt'))
+    target.write_text(text, encoding='utf-8')
+    print('已提取为 UTF-8 文本:', target)
+    print('请让 AI 读取这个文件；不用把全部内容打印到终端。')
+    return target
+
+
+def check_pdf(directory, max_pages=1, render=True):
+    """Check geometry and render with one engine; never infer factual accuracy."""
+    directory = output_paths(directory)
+    work = work_directory(directory)
+    report_path = guard_path(work / 'checks.json')
+    # Clear the old report before any failure, including a missing dependency.
+    if report_path.exists():
+        report_path.unlink()
+    engine = pdf_library()
+    issues, warnings = [], []
+    state_file = guard_path(work / 'build.json')
+    state = json.loads(state_file.read_text(encoding='utf-8')) if state_file.is_file() else {}
+    if state and state.get('status') != 'compiled':
+        issues.append('最近一次编译未成功，不能把旧 PDF 当作本次结果')
+    if not state:
+        warnings.append('没有辅助脚本的编译记录，只能检查现有 PDF；请人工确认它对应当前源文件')
+    pdf_name = state.get('pdf', 'resume.pdf')
+    log_name = state.get('log', 'resume.log')
+    if pdf_name not in ('resume.pdf', 'resume-optimized.pdf') or log_name not in ('resume.log', 'resume-optimized.log'):
+        raise ValueError('编译记录中的文件名无效')
+    pdf_file = guard_path(directory / pdf_name)
+    source = directory / 'resume.tex'
+    if not source.is_file():
+        raise ValueError('缺少 resume.tex，无法对照模板检查姓名')
+    text = source.read_text(encoding='utf-8')
+    if state.get('status') == 'compiled':
+        if hashlib.sha256(source.read_bytes()).hexdigest() != state.get('source_sha256'):
+            issues.append('源文件在编译后发生变化，需要重新生成 PDF')
+        if hashlib.sha256(pdf_file.read_bytes()).hexdigest() != state.get('pdf_sha256'):
+            issues.append('PDF 与最近一次编译记录不一致')
+        if state.get('class_sha256') and hashlib.sha256((directory / 'resume.cls').read_bytes()).hexdigest() != state['class_sha256']:
+            issues.append('模板在编译后发生变化，需要重新生成 PDF')
+    match = re.search(r'\\name\s*\{([^{}]*)\}', text)
+    expected_name = match.group(1).strip() if match else ''
+    report = {'passed': False, 'issues': issues, 'warnings': warnings,
+              'previews': [], 'facts_verified': False, 'pdf': pdf_name}
+    with engine.open(pdf_file) as doc:
+        report['pages'] = len(doc)
+        if len(doc) > max_pages:
+            issues.append('页数超过本次要求')
+        if not expected_name:
+            issues.append('没有填写模板中的姓名')
+        if len(doc):
+            page = doc[0]
+            names = [box for box in page.search_for(expected_name) if box.y0 < page.rect.height / 4] if expected_name else []
+            if len(names) != 1:
+                issues.append('未能在页眉唯一识别姓名，需要查看预览')
+            else:
+                name = names[0]
+                offset = (name.x0 + name.x1 - page.rect.width) / 2
+                report['name_center_offset_pt'] = round(offset, 3)
+                if abs(offset) > 1:
+                    issues.append('姓名没有相对页面居中')
+            for i, page in enumerate(doc):
+                page_text = page.get_text()
+                if not page_text.strip():
+                    issues.append('存在无法提取文字的页面')
+                spans = [span for block in page.get_text('dict')['blocks']
+                         for line in block.get('lines', []) for span in line['spans']
+                         if span['text'].strip()]
+                for span in spans:
+                    box = engine.Rect(span['bbox'])
+                    if box.x0 < -1 or box.y0 < -1 or box.x1 > page.rect.width + 1 or box.y1 > page.rect.height + 1:
+                        issues.append('文字超出页面边界')
+                        break
+                for image in page.get_image_info():
+                    rect = engine.Rect(image['bbox'])
+                    if any(rect.intersects(engine.Rect(s['bbox'])) for s in spans):
+                        issues.append('图片可能遮挡文字')
+                if render and i < max_pages:
+                    preview = guard_path(work / ('page-' + str(i + 1) + '.png'))
+                    page.get_pixmap(matrix=engine.Matrix(1.5, 1.5)).save(preview)
+                    report['previews'].append(preview.name)
+        else:
+            issues.append('PDF 没有页面')
+    log = guard_path(directory / log_name)
+    if not log.is_file():
+        issues.append('缺少本次编译日志')
+    elif re.search(r'Overfull \\[hv]box|Missing character:', log.read_text(encoding='utf-8', errors='replace')):
+        issues.append('编译日志存在溢出或缺字')
+    if any(sample in text for sample in ('林小满', 'lin@example.com', '示例大学')):
+        warnings.append('存在模板示例文字，请确认已替换')
+    if re.search(r'[（(]', text):
+        warnings.append('存在括号，请逐个核对是否必要')
+    report['issues'] = list(dict.fromkeys(issues))
+    report['passed'] = not issues
+    report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
+    print('排版自动检查' + ('通过' if report['passed'] else '未通过') + ':', report_path)
+    for issue in report['issues']:
+        print('需处理:', issue)
+    for warning in warnings:
+        print('需核对:', warning)
+    print('请查看生成的预览；检查结果不代表事实、奖项顺序或论文状态已核实。')
+    return 0 if report['passed'] else 1
 
 
 def inspect_paths(paths):
@@ -187,8 +382,10 @@ def privacy():
 
 def main():
     parser = argparse.ArgumentParser(description='AI 自动生成简历：本地辅助工具')
-    parser.add_argument('command', choices=['doctor', 'init', 'build', 'demo', 'privacy'])
+    parser.add_argument('command', choices=['doctor', 'init', 'build', 'demo', 'privacy', 'read', 'check'])
     parser.add_argument('--workspace', type=Path, help='材料所在的工作区；默认使用项目目录')
+    parser.add_argument('--input', type=Path, dest='input_path', help='read 命令要读取的材料')
+    parser.add_argument('--max-pages', type=int, default=1, help='check 允许的页数；默认 1')
     args = parser.parse_args()
     global WORKSPACE
     if args.workspace is not None:
@@ -196,12 +393,24 @@ def main():
         if not WORKSPACE.is_dir():
             parser.error('工作区目录不存在')
     try:
+        if args.command == 'read':
+            if args.input_path is None:
+                parser.error('read 需要 --input 材料文件路径')
+            extract_material(args.input_path, workspace_root() / 'output')
+            return 0
+        if args.command == 'check':
+            if args.max_pages < 1:
+                parser.error('--max-pages 必须大于 0')
+            return check_pdf(workspace_root() / 'output', max_pages=args.max_pages)
         return globals()[args.command]()
-    except (ValueError, OSError, subprocess.CalledProcessError) as error:
+    except (ValueError, OSError, RuntimeError, zipfile.BadZipFile, ET.ParseError, subprocess.CalledProcessError) as error:
         print('未完成:', str(error))
         return 1
 
 
 if __name__ == '__main__':
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
     raise SystemExit(main())
+
 

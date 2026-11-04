@@ -118,6 +118,32 @@ class HelpersTest(unittest.TestCase):
             self.assertEqual(resume.inspect_paths(['docs/faq.md']), [])
             self.assertEqual(len(resume.inspect_paths(['docs/personal.txt', '../outside.txt'])), 2)
 
+    def test_locked_pdf_is_preserved_and_new_result_has_its_own_record(self):
+        import json
+        from types import SimpleNamespace
+        original_unlink = Path.unlink
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            old = root / 'resume.pdf'
+            old.write_bytes(b'%PDF-original')
+            (root / 'resume.tex').write_text('source')
+            def unlink(path, *args, **kwargs):
+                if path == old:
+                    raise PermissionError('reader locks PDF')
+                return original_unlink(path, *args, **kwargs)
+            def run(args, **kwargs):
+                self.assertIn('-jobname=resume-optimized', args)
+                (root / 'resume-optimized.pdf').write_bytes(b'%PDF-new')
+                (root / 'resume-optimized.log').write_text('Output written on resume-optimized.pdf (1 page)')
+                return SimpleNamespace(returncode=0, stdout=b'')
+            with patch.object(Path, 'unlink', unlink), patch.object(resume.shutil, 'which', return_value='xelatex'), patch.object(resume.subprocess, 'run', side_effect=run):
+                self.assertEqual(resume.compile_at(root), 0)
+            self.assertEqual(old.read_bytes(), b'%PDF-original')
+            self.assertEqual((root / 'resume-optimized.pdf').read_bytes(), b'%PDF-new')
+            state = json.loads((root / '.work/build.json').read_text())
+            self.assertEqual(state['status'], 'compiled')
+            self.assertEqual(state['pdf'], 'resume-optimized.pdf')
+
     def test_secret_detection_does_not_echo_secret(self):
         with tempfile.TemporaryDirectory() as tmp, patch.object(resume, 'ROOT', Path(tmp)):
             (Path(tmp) / 'README.md').write_text('ghp_' + 'x' * 30, encoding='utf-8')
@@ -128,4 +154,5 @@ class HelpersTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
 

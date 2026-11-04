@@ -60,3 +60,13 @@ AI 直接运行命令生成 PDF 时，可以不装 VS Code 或插件。
 有 Python 时，可以让 AI 运行 `python scripts/resume.py doctor` 检查工具。分析项目的提交记录还需要 Git，已经装过就直接用。
 
 排版测试已在 Windows + MiKTeX 和 Linux + TeX Live 上通过。macOS 和不同 AI 助手尚未逐一实测，先让 AI 编译虚构示例，再处理个人简历。
+
+## AI 读取 Word 乱码、PDF 预览缺字怎么办
+
+Word 读取优先用项目的 `read` 命令，它会把材料保存为 UTF-8 文字供 AI 读取，不需要额外安装 Word 解析库。
+
+PDF 检查优先用项目的 `check` 命令，需要时只补一个可选工具：`python -m pip install PyMuPDF`。命令会检查页数、姓名位置、文字边界及图片遮挡，并生成整页 PNG。AI 还需要看图检查，自动检查不能确认经历真假。
+
+如果某个 Poppler 报 Adobe-GB1 或 CMap 缺失，可能是预览工具缺组件；先换已有渲染器复核，不要直接修改简历字体或连续尝试浏览器截图。执行环境限制安装或读写时，应如实说明受限的检查。
+
+如果原 PDF 被阅读器占用，辅助脚本会保留它，将新结果保存为 `resume-optimized.pdf`。AI 会按本次检查报告给出正确的新文件链接。源文件在编译后再次修改，检查会要求重新生成，避免拿旧 PDF 交付。

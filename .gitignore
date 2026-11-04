@@ -56,3 +56,4 @@
 !/tests/test_layout.py
 !/licenses/reactive-resume-MIT.txt
 !/licenses/resume-skills-MIT.txt
+!/tests/test_io.py
