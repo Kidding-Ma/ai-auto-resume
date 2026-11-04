@@ -7,7 +7,7 @@
 <p align="center">
   <a href="https://github.com/Kidding-Ma/ai-auto-resume/stargazers"><img src="https://img.shields.io/github/stars/Kidding-Ma/ai-auto-resume?style=flat&amp;logo=github&amp;color=14b8a6" alt="GitHub stars"></a>
   <a href="https://github.com/Kidding-Ma/ai-auto-resume/actions/workflows/check.yml"><img src="https://github.com/Kidding-Ma/ai-auto-resume/actions/workflows/check.yml/badge.svg?branch=main" alt="Project checks"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-2563eb" alt="MIT license"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/Code-MIT-2563eb" alt="Code license: MIT"></a>
   <img src="https://img.shields.io/badge/Output-PDF-0f766e" alt="PDF output">
   <img src="https://img.shields.io/badge/Typesetting-LaTeX-334155" alt="LaTeX typesetting">
 </p>
@@ -22,7 +22,7 @@
 
 ## 怎么用
 
-有旧简历或项目资料，直接放进工作区。没有就新建 `个人情况.txt`，照着写几行：
+有旧简历或项目资料，直接放进 AI 当前打开的文件夹。没有就新建 `个人情况.txt`，照着写几行：
 
 ```text
 教育：学校、专业、学历、入学和毕业时间
@@ -53,7 +53,6 @@ AI 会根据材料选择内容和顺序，默认省略空泛概述、减少解�
 
 已有 LaTeX、编辑器和插件直接用，不用重复安装。
 
-想修改，继续说：“压到一页”或“按这份招聘要求改一版”。
 
 [材料怎么写](docs/materials.md) · [缺少工具怎么办](docs/setup.md) · [常见问题](docs/faq.md)
 
@@ -63,9 +62,9 @@ AI 会根据材料选择内容和顺序，默认省略空泛概述、减少解�
 
 - 项目经历整理：[resume-project-miner](https://github.com/auberginewly/resume-project-miner)，作者 auberginewly。已内置。
 - 固定模板：[Overleaf 中文简历模板](https://cn.overleaf.com/latex/templates/chinese-resume-template-zhong-wen-jian-li-mo-ban/fbdypsjmgwbb)，作者 xiangrongjingujiu。保留原版排版参数，商业字体以开源字体替代；照片不挤偏姓名。
-- 写作方法参考：[Reactive Resume](https://github.com/reactive-resume/reactive-resume) 与 [ResumeSkills](https://github.com/Paramchoudhary/ResumeSkills)。采用内容及许可见[来源说明](docs/sources.md)。
+- 写作方法参考：[Reactive Resume](https://github.com/reactive-resume/reactive-resume) 与 [ResumeSkills](https://github.com/Paramchoudhary/ResumeSkills)。采用的方法与许可见[参考来源与致谢](THIRD_PARTY_NOTICES.md)。
 
-[MIT 许可](LICENSE) · [第三方许可](THIRD_PARTY_NOTICES.md) · [参与改进](CONTRIBUTING.md) · [反馈问题](https://github.com/Kidding-Ma/ai-auto-resume/issues/new/choose)
+[代码许可](LICENSE) · [参考来源与致谢](THIRD_PARTY_NOTICES.md) · [参与改进](CONTRIBUTING.md) · [反馈问题](https://github.com/Kidding-Ma/ai-auto-resume/issues/new/choose)
 
 帮忙点点 star，这对我真的很重要，祝 offer 多多，谢谢。
 

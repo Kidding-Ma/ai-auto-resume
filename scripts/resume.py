@@ -5,6 +5,7 @@ import re
 import shutil
 import subprocess
 import sys
+import time
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKSPACE = None
@@ -14,8 +15,35 @@ def workspace_root():
 
 
 PRIVATE = ('materials/', 'workspace/', 'output/', '.private/')
-PUBLIC_DIRS = ('docs/', 'templates/', 'examples/', 'skills/', 'licenses/', 'scripts/', '.vscode/', '.github/', 'tests/')
-PUBLIC_FILES = {'README.md', 'AGENTS.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md', 'CONTRIBUTING.md', '.gitignore', '.gitattributes', 'provenance.json'}
+PUBLIC_FILES = {'README.md', 'AGENTS.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md', 'CONTRIBUTING.md', '.gitignore', '.gitattributes', 'provenance.json', 'templates/resume.tex', 'templates/resume.cls'}
+
+
+def guard_path(path):
+    """Reject links (including junctions) and dangling links before writing."""
+    path = Path(path).absolute()
+    if path.is_symlink() or path.resolve() != path:
+        raise ValueError('输出路径包含链接，请使用普通文件夹: ' + str(path))
+    return path
+
+
+def output_paths(directory):
+    directory = guard_path(directory)
+    for name in ('resume.tex', 'resume.cls', 'resume.pdf', 'resume.log', 'resume.aux',
+                 'resume.out', 'resume.synctex.gz', '.previous'):
+        guard_path(directory / name)
+    return directory
+
+
+def public_paths():
+    names = set(PUBLIC_FILES)
+    ignore = ROOT / '.gitignore'
+    if ignore.is_file():
+        for line in ignore.read_text(encoding='utf-8').splitlines():
+            if line.startswith('!/') and not line.endswith('/'):
+                name = line[2:]
+                if not any(c in name for c in '*?[]'):
+                    names.add(name)
+    return names
 
 
 def doctor():
@@ -28,9 +56,7 @@ def doctor():
 
 
 def init():
-    destination = workspace_root() / 'output'
-    if destination.is_symlink():
-        raise ValueError('output must not be a symlink')
+    destination = output_paths(workspace_root() / 'output')
     destination.mkdir(exist_ok=True)
     for name in ('resume.tex', 'resume.cls'):
         dest = destination / name
@@ -44,6 +70,17 @@ def init():
 
 
 def compile_at(directory):
+    directory = output_paths(directory)
+    pdf = directory / 'resume.pdf'
+    # Archive first: even a preflight failure must not leave an old PDF as output.
+    if pdf.exists():
+        backup = directory / '.previous'
+        backup.mkdir(exist_ok=True)
+        previous = guard_path(backup / 'resume.pdf')
+        if previous.exists():
+            previous = guard_path(backup / ('resume-' + str(time.time_ns()) + '.pdf'))
+        shutil.copy2(pdf, previous)
+        pdf.unlink()
     compiler = shutil.which('xelatex')
     if not compiler:
         print('未找到 XeLaTeX。先检查已有 LaTeX 安装和 PATH，缺少组件时在现有发行版补齐；确实没有环境再按 docs/setup.md 安装。本次没有生成新 PDF。')
@@ -52,13 +89,6 @@ def compile_at(directory):
     if not source.exists():
         print('缺少 resume.tex，请先让 AI 生成源文件。')
         return 1
-    pdf = directory / 'resume.pdf'
-    # Preserve the previous result, but never present it as a new successful build.
-    if pdf.exists():
-        backup = directory / '.previous'
-        backup.mkdir(exist_ok=True)
-        shutil.copy2(pdf, backup / 'resume.pdf')
-        pdf.unlink()
     args = [compiler, '-no-shell-escape', '-interaction=nonstopmode', '-halt-on-error', 'resume.tex']
     for _ in range(2):
         try:
@@ -75,11 +105,19 @@ def compile_at(directory):
             print('编译失败，没有生成可用的新 PDF。详细信息在该目录的 resume.log。')
             return 1
     if not pdf.exists() or not pdf.read_bytes().startswith(b'%PDF-'):
+        if pdf.exists():
+            pdf.unlink()
         print('编译器未生成有效 PDF。')
         return 1
-    log = (directory / 'resume.log').read_text(encoding='utf-8', errors='replace')
+    logfile = directory / 'resume.log'
+    if not logfile.is_file():
+        pdf.unlink()
+        print('缺少编译日志，无法检查本次 PDF。')
+        return 1
+    log = logfile.read_text(encoding='utf-8', errors='replace')
     if re.search(r'Overfull \\[hv]box|Missing character:', log):
-        print('排版检查失败：发现溢出或缺字，请修正并检查 PDF。')
+        pdf.unlink()
+        print('排版检查失败：发现溢出或缺字，本次 PDF 未作为成品保留。')
         return 1
     pages = re.search(r'Output written on .*?\((\d+) page', log)
     print('已编译:', pdf)
@@ -94,7 +132,7 @@ def build():
 
 
 def demo():
-    directory = ROOT / 'output' / '.demo'
+    directory = output_paths(ROOT / 'output' / '.demo')
     directory.mkdir(parents=True, exist_ok=True)
     for name in ('resume.tex', 'resume.cls'):
         shutil.copyfile(ROOT / 'templates' / name, directory / name)
@@ -103,18 +141,22 @@ def demo():
 
 def inspect_paths(paths):
     problems = []
+    allowed = public_paths()
     for name in paths:
         name = name.replace('\\', '/')
+        if Path(name).is_absolute() or '..' in Path(name).parts:
+            problems.append((name, '不是仓库内的相对路径'))
+            continue
         if name.startswith(PRIVATE):
             problems.append((name, '私人文件正在被 Git 跟踪'))
             continue
-        if not (name in PUBLIC_FILES or name.startswith(PUBLIC_DIRS)):
+        if name not in allowed:
             problems.append((name, '不在公开文件清单中，请人工核对'))
         p = ROOT / name
-        if not p.is_file():
-            continue
-        if p.is_symlink():
+        if p.is_symlink() or p.resolve() != p.absolute():
             problems.append((name, '禁止发布符号链接，避免指向私人材料'))
+            continue
+        if not p.is_file():
             continue
         if p.suffix.lower() in {'.pdf', '.png', '.jpg', '.zip', '.docx'}:
             if name not in {'docs/preview.pdf', 'docs/preview.png'}:
@@ -153,8 +195,13 @@ def main():
         WORKSPACE = args.workspace.resolve()
         if not WORKSPACE.is_dir():
             parser.error('工作区目录不存在')
-    return globals()[args.command]()
+    try:
+        return globals()[args.command]()
+    except (ValueError, OSError, subprocess.CalledProcessError) as error:
+        print('未完成:', str(error))
+        return 1
 
 
 if __name__ == '__main__':
     raise SystemExit(main())
+

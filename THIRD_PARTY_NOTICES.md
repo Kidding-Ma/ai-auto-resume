@@ -1,18 +1,32 @@
-# 第三方内容与修改
+# 参考来源与致谢
 
-## 简历模板
+这个项目使用了开源简历模板，也参考了其他项目的写作方法。本页说明它们来自哪里、用了什么，以及做了哪些调整。
 
-来源：[Chinese Resume Template](https://cn.overleaf.com/latex/templates/chinese-resume-template-zhong-wen-jian-li-mo-ban/fbdypsjmgwbb)，作者 xiangrongjingujiu，展示页许可 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)，[许可全文](https://creativecommons.org/licenses/by/4.0/legalcode)。本次从用户提供的该模板类文件快照恢复原排版参数；没有复制真人正文、照片或商业字体。保留作者署名和许可链接，未暗示作者认可本项目。
+## 简历模板来自哪里？
 
-兼容改动：字体路径改为发行版提供的 TeX Gyre Termes；中文用 Fandol 宋体与黑体替代原 Adobe 字体；去掉未使用的图标字体依赖；联系方式允许换行；照片预留对称空间避免姓名偏移。字号、页边距和章节规则恢复原模板参数。templates/resume.tex 的正文是虚构示例。
+使用 [Overleaf 中文简历模板](https://cn.overleaf.com/latex/templates/chinese-resume-template-zhong-wen-jian-li-mo-ban/fbdypsjmgwbb)，作者 **xiangrongjingujiu**，按 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) 使用。[查看完整许可](https://creativecommons.org/licenses/by/4.0/legalcode)。
 
-早期版本基于 [billryan/resume](https://github.com/billryan/resume) 的 MIT 类文件；原始许可继续保留于 licenses/billryan-resume-MIT.txt 以说明历史来源。字体及宏包由用户的 TeX 发行版提供，按各自许可使用，不重新分发商业字体。
+保留原模板的字号、页边距、章节样式和横线。为了让更多电脑能编译，做了以下调整：
 
-## 已内置的项目经历 Skill
+- 用开源的 TeX Gyre Termes 和 Fandol 字体替代原来的商业字体；字形会有细微区别。
+- 允许联系方式换行，照片放在右上角，姓名仍相对整页居中。
+- 去掉没有用到的图标字体和序数宏包依赖。
 
-[auberginewly/resume-project-miner](https://github.com/auberginewly/resume-project-miner)，MIT。原始 LICENSE 和快照摘要保留，不含任何用户材料。
+公开示例中的人物和经历全部虚构。照片由使用者自行提供。商业字体、真人简历和照片均未随项目发布；使用的字体和排版组件遵循各自的许可。
 
-## 写作方法参考
+早期版本参考过 [billryan/resume](https://github.com/billryan/resume)，其 [MIT 许可](licenses/billryan-resume-MIT.txt)继续保留。
 
-[Reactive Resume](https://github.com/reactive-resume/reactive-resume)，作者 Amruth Pillai；[ResumeSkills](https://github.com/Paramchoudhary/ResumeSkills)，版权方 Resume Skills。均为 MIT，许可证原文保留于 licenses/reactive-resume-MIT.txt 和 licenses/resume-skills-MIT.txt。本项目按中文简历场景重写了采用的方法，没有复制完整 skill 或示例事实。选择及未采用规则见 [sources.md](docs/sources.md)。
+## 项目经历如何整理？
 
+已内置 **auberginewly** 的 [resume-project-miner](https://github.com/auberginewly/resume-project-miner)。它用项目代码和提交记录帮助区分项目事实与个人贡献，按 [MIT 许可](skills/resume-project-miner/LICENSE)使用。
+
+## 写作方法参考了谁？
+
+| 项目 | 本项目采用的方法 | 许可 |
+| --- | --- | --- |
+| [Reactive Resume](https://github.com/reactive-resume/reactive-resume)，Amruth Pillai | 先整理事实，按经历安排内容，用具体行动和真实结果写项目 | [MIT](licenses/reactive-resume-MIT.txt) |
+| [ResumeSkills](https://github.com/Paramchoudhary/ResumeSkills)，Resume Skills | 检查每条描述是否说清做了什么、怎么做、有什么结果 | [MIT](licenses/resume-skills-MIT.txt) |
+
+采用的方法已改写成适合中文简历的[写作规则](docs/writing-rules.md)，无需额外安装这两个项目。不采用编造数据、强求每条都有数字等做法。[查看具体参考范围](docs/sources.md)。
+
+本项目新增的代码和文档使用 [MIT 许可](LICENSE)。模板及引用内容按上面各自的许可使用，原作者不因此代表或认可本项目。[版本记录](provenance.json)保留了参考文件的标识。

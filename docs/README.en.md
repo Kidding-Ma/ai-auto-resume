@@ -7,7 +7,7 @@
 <p align="center">
   <a href="https://github.com/Kidding-Ma/ai-auto-resume/stargazers"><img src="https://img.shields.io/github/stars/Kidding-Ma/ai-auto-resume?style=flat&amp;logo=github&amp;color=14b8a6" alt="GitHub stars"></a>
   <a href="https://github.com/Kidding-Ma/ai-auto-resume/actions/workflows/check.yml"><img src="https://github.com/Kidding-Ma/ai-auto-resume/actions/workflows/check.yml/badge.svg?branch=main" alt="Project checks"></a>
-  <a href="../LICENSE"><img src="https://img.shields.io/badge/License-MIT-2563eb" alt="MIT license"></a>
+  <a href="../LICENSE"><img src="https://img.shields.io/badge/Code-MIT-2563eb" alt="Code license: MIT"></a>
   <img src="https://img.shields.io/badge/Output-PDF-0f766e" alt="PDF output">
   <img src="https://img.shields.io/badge/Typesetting-LaTeX-334155" alt="LaTeX typesetting">
 </p>
@@ -56,7 +56,7 @@ The assistant selects sections from your evidence, omits generic summaries by de
 
 The template uses XeLaTeX. MiKTeX, TeX Live and MacTeX can provide it; let your assistant check what is already installed before adding anything. VS Code and a LaTeX extension are optional when your assistant compiles from the command line. Python 3.10+ is optional for the included helper scripts.
 
-The template has been compiled on Windows with MiKTeX. Other operating systems and individual AI clients have not all been tested end to end.
+PDF layout tests pass on Windows with MiKTeX and in Linux CI with TeX Live. Individual AI clients and macOS have not all been tested end to end.
 
 More help in Chinese: [Materials](materials.md) · [Setup](setup.md) · [FAQ](faq.md).
 
@@ -66,9 +66,9 @@ Do not upload personal materials or generated resumes to a public repository. Th
 
 - Project experience analysis: [resume-project-miner](https://github.com/auberginewly/resume-project-miner) by auberginewly, included in this repository.
 - Fixed layout: [Overleaf Chinese Resume Template](https://cn.overleaf.com/latex/templates/chinese-resume-template-zhong-wen-jian-li-mo-ban/fbdypsjmgwbb) by xiangrongjingujiu, CC BY 4.0. Original layout parameters with open-font substitutions and a page-centred photo header.
-- Writing methods: [Reactive Resume](https://github.com/reactive-resume/reactive-resume) and [ResumeSkills](https://github.com/Paramchoudhary/ResumeSkills). See [sources](sources.md) for selections and licenses.
+- Writing methods: [Reactive Resume](https://github.com/reactive-resume/reactive-resume) and [ResumeSkills](https://github.com/Paramchoudhary/ResumeSkills). See [sources and credits](../THIRD_PARTY_NOTICES.md) for methods and licenses.
 
-[MIT license](../LICENSE) · [Third-party notices](../THIRD_PARTY_NOTICES.md) · [Contributing](../CONTRIBUTING.md) · [Report an issue](https://github.com/Kidding-Ma/ai-auto-resume/issues/new/choose)
+[Code license](../LICENSE) · [Sources and credits](../THIRD_PARTY_NOTICES.md) · [Contributing](../CONTRIBUTING.md) · [Report an issue](https://github.com/Kidding-Ma/ai-auto-resume/issues/new/choose)
 
 If this helps you, a Star would mean a lot. Good luck with your applications!
 

@@ -69,6 +69,55 @@ class HelpersTest(unittest.TestCase):
             self.assertFalse((root / 'resume.pdf').exists())
             self.assertEqual((root / '.previous/resume.pdf').read_bytes(), b'%PDF-previous')
 
+    def test_preflight_failure_archives_pdf_without_overwriting_backup(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'resume.pdf').write_bytes(b'%PDF-newer')
+            (root / '.previous').mkdir()
+            (root / '.previous/resume.pdf').write_bytes(b'%PDF-older')
+            with patch.object(resume.shutil, 'which', return_value=None):
+                self.assertEqual(resume.compile_at(root), 1)
+            self.assertFalse((root / 'resume.pdf').exists())
+            self.assertEqual((root / '.previous/resume.pdf').read_bytes(), b'%PDF-older')
+            self.assertEqual([p.read_bytes() for p in (root / '.previous').glob('resume-*.pdf')], [b'%PDF-newer'])
+
+    def test_bad_layout_missing_log_and_invalid_pdf_are_not_deliverables(self):
+        for log, data in [('Overfull \\hbox', b'%PDF-test'), ('Missing character:', b'%PDF-test'),
+                          (None, b'%PDF-test'), ('Output written on resume.pdf (1 page)', b'broken')]:
+            with self.subTest(log=log, data=data), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                (root / 'resume.tex').write_text('source')
+                def fake_run(*args, **kwargs):
+                    from types import SimpleNamespace
+                    (root / 'resume.pdf').write_bytes(data)
+                    if log is not None:
+                        (root / 'resume.log').write_text(log)
+                    return SimpleNamespace(returncode=0, stdout=b'')
+                with patch.object(resume.shutil, 'which', return_value='xelatex'), patch.object(resume.subprocess, 'run', side_effect=fake_run):
+                    self.assertEqual(resume.compile_at(root), 1)
+                self.assertFalse((root / 'resume.pdf').exists())
+
+    def test_init_rejects_dangling_link_without_writing_target(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'output').mkdir()
+            target = root / 'unrelated.txt'
+            try:
+                (root / 'output/resume.tex').symlink_to(target)
+            except OSError:
+                self.skipTest('creating symlinks is not permitted')
+            with patch.object(resume, 'WORKSPACE', root):
+                with self.assertRaises(ValueError):
+                    resume.init()
+            self.assertFalse(target.exists())
+
+    def test_privacy_requires_exact_paths_even_inside_docs(self):
+        with tempfile.TemporaryDirectory() as tmp, patch.object(resume, 'ROOT', Path(tmp)):
+            root = Path(tmp)
+            (root / '.gitignore').write_text('*\n!/docs/\n!/docs/faq.md\n')
+            self.assertEqual(resume.inspect_paths(['docs/faq.md']), [])
+            self.assertEqual(len(resume.inspect_paths(['docs/personal.txt', '../outside.txt'])), 2)
+
     def test_secret_detection_does_not_echo_secret(self):
         with tempfile.TemporaryDirectory() as tmp, patch.object(resume, 'ROOT', Path(tmp)):
             (Path(tmp) / 'README.md').write_text('ghp_' + 'x' * 30, encoding='utf-8')
@@ -79,3 +128,4 @@ class HelpersTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
