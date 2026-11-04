@@ -39,7 +39,7 @@
 ```text
 用这个项目帮我生成简历：https://github.com/Kidding-Ma/ai-auto-resume
 我的个人情况和材料就在当前工作区。
-请先读项目的 AGENTS.md，按其中的写作和检查规则，用固定模板直接生成 PDF 简历。
+请先从这个 GitHub 链接读取最新 AGENTS.md，核对本地项目版本，再按规则用固定模板生成 PDF 简历。
 已有工具直接用，缺什么再告诉我。不要编造经历和数据。
 ```
 

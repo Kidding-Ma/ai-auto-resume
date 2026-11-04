@@ -31,3 +31,23 @@ jobs:
           python -m pip install PyMuPDF Pillow
       - name: Check page-centred names with JPG, PNG and no photo
         run: python -m unittest discover -s tests -v
+
+  layout-macos:
+    runs-on: macos-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install a small TeX environment for macOS tests
+        run: |
+          if ! test -x /Library/TeX/texbin/xelatex; then
+            brew install --cask basictex
+          fi
+          echo "/Library/TeX/texbin" >> "$GITHUB_PATH"
+          sudo /Library/TeX/texbin/tlmgr update --self
+          sudo /Library/TeX/texbin/tlmgr install xetex ctex fandol tex-gyre xltxtra xifthen titlesec enumitem hyperref
+          python -m pip install PyMuPDF Pillow
+      - name: Check macOS template, text extraction and layout
+        run: python -m unittest discover -s tests -v

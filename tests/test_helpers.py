@@ -152,7 +152,59 @@ class HelpersTest(unittest.TestCase):
             self.assertNotIn('x' * 30, str(result))
 
 
+class TemplateContractTest(unittest.TestCase):
+    def prepare(self, root):
+        (root / 'resume.tex').write_text((resume.ROOT / 'templates/resume.tex').read_text(encoding='utf-8'), encoding='utf-8')
+        (root / 'resume.cls').write_bytes((resume.ROOT / 'templates/resume.cls').read_bytes())
+
+    def test_identity_and_body_changes_are_allowed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.prepare(root)
+            source = root / 'resume.tex'
+            text = source.read_text(encoding='utf-8').replace('林小满', '测试人').replace('lin@example.com', 'test@example.com').replace('校园预约系统', '真实课程作业')
+            source.write_text(text, encoding='utf-8')
+            self.assertEqual(resume.template_issues(root), [])
+
+    def test_changed_mac_font_or_line_spacing_is_rejected(self):
+        for before, after in [('fontset=none', 'fontset=macnew'),
+                              (r'\section{教育背景}', r'\linespread{1.2}\section{教育背景}'),
+                              ('p{2.4cm}', 'p{1.5cm}')]:
+            with self.subTest(after=after), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                self.prepare(root)
+                source = root / 'resume.tex'
+                text = source.read_text(encoding='utf-8')
+                self.assertIn(before, text)
+                source.write_text(text.replace(before, after), encoding='utf-8')
+                self.assertTrue(resume.template_issues(root))
+
+    def test_class_geometry_change_is_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.prepare(root)
+            cls = root / 'resume.cls'
+            cls.write_text(cls.read_text(encoding='utf-8').replace('left=0.7in', 'left=0.4in'), encoding='utf-8')
+            self.assertTrue(resume.template_issues(root))
+
+    def test_build_does_not_compile_rejected_template(self):
+        import json
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            out = root / 'output'
+            out.mkdir()
+            self.prepare(out)
+            source = out / 'resume.tex'
+            source.write_text(source.read_text(encoding='utf-8').replace('fontset=none', 'fontset=macnew'), encoding='utf-8')
+            with patch.object(resume, 'WORKSPACE', root), patch.object(resume, 'compile_at') as compile_at:
+                self.assertEqual(resume.build(), 1)
+                compile_at.assert_not_called()
+            state = json.loads((out / '.work/build.json').read_text(encoding='utf-8'))
+            self.assertEqual(state['status'], 'template-rejected')
+
+
 if __name__ == '__main__':
     unittest.main()
+
 
 

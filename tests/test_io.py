@@ -2,6 +2,7 @@
 import importlib.util
 from pathlib import Path
 import json
+import shutil
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -57,7 +58,12 @@ class MaterialTest(unittest.TestCase):
 class PDFCheckTest(unittest.TestCase):
     def fixture(self, root, *, offset=0, overlap=False):
         name = 'TEST PERSON'
-        (root / 'resume.tex').write_text(r'\name{' + name + '}', encoding='utf-8')
+        original = (resume.ROOT / 'templates/resume.tex').read_text(encoding='utf-8')
+        header = original[:original.index(r'\section{')]
+        header = header.replace(r'\name{林小满}', r'\name{' + name + '}')
+        header = header.replace('lin@example.com', '')
+        (root / 'resume.tex').write_text(header + r'\section{Test} Fictional content.\end{document}', encoding='utf-8')
+        shutil.copyfile(resume.ROOT / 'templates/resume.cls', root / 'resume.cls')
         (root / 'resume.log').write_text('Output written on resume.pdf (1 page)', encoding='utf-8')
         doc = engine.open()
         page = doc.new_page(width=595, height=842)
@@ -123,3 +129,4 @@ class PDFCheckTest(unittest.TestCase):
             (root / '.work/build.json').write_text(json.dumps(state))
             (root / 'resume.tex').write_text(r'\name{TEST PERSON}' + '\n% revised')
             self.assertEqual(resume.check_pdf(root, render=False), 1)
+

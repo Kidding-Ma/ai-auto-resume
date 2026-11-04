@@ -37,7 +37,7 @@ Open that folder in your AI assistant and send:
 ```text
 Use this project to create my resume: https://github.com/Kidding-Ma/ai-auto-resume
 My personal details and supporting materials are in the current workspace.
-Read the project's AGENTS.md and its writing and review rules. Use the fixed template to create an English PDF resume.
+Read the latest AGENTS.md from this GitHub URL and check any local copy's version first. Follow its rules and use the fixed template to create an English PDF resume.
 Reuse existing tools. Tell me if anything essential is missing.
 Do not invent experience or numbers.
 ```

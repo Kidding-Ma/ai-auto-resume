@@ -13,6 +13,7 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKSPACE = None
+WORKFLOW_VERSION = '2026-11-04.3'
 
 def workspace_root():
     return WORKSPACE if WORKSPACE is not None else ROOT
@@ -51,6 +52,8 @@ def public_paths():
 
 
 def doctor():
+    print('流程版本:', WORKFLOW_VERSION)
+    print('工具目录:', ROOT)
     print('Python:', sys.version.split()[0])
     for command, required in [('xelatex', True), ('git', False), ('code', False), ('pdftoppm', False)]:
         print(f'{command}: ' + ('OK' if shutil.which(command) else ('未找到，先检查已有 LaTeX 安装和 PATH；确实缺少时再补齐 XeLaTeX，见 docs/setup.md' if required else '未找到（可选）')))
@@ -162,7 +165,72 @@ def compile_at(directory):
 
 
 def build():
-    return compile_at(workspace_root() / 'output')
+    directory = output_paths(workspace_root() / 'output')
+    problems = template_issues(directory)
+    if problems:
+        work = work_directory(directory)
+        state = guard_path(work / 'build.json')
+        state.write_text(json.dumps({'status': 'template-rejected', 'workflow_version': WORKFLOW_VERSION}), encoding='utf-8')
+        report = guard_path(work / 'checks.json')
+        if report.exists():
+            report.unlink()
+        for problem in problems:
+            print('未生成:', problem)
+        print('请备份已有文件，从当前项目模板恢复页眉和样式，再迁入真实正文。')
+        return 1
+    return compile_at(directory)
+
+
+def fixed_header(text):
+    """Mask only the identity macro; the rest of the template stays fixed."""
+    text = re.sub(r'(?<!\\)%[^\n]*', '', text)
+    sections = list(re.finditer(r'\\section\s*\{', text))
+    if not sections:
+        raise ValueError('缺少简历章节')
+    header = text[:sections[0].start()]
+    matches = list(re.finditer(r'\\newcommand\s*\{\s*\\resumeidentity\s*\}\s*\{', header))
+    if len(matches) != 1:
+        raise ValueError('固定页眉结构不完整')
+    match = matches[0]
+    start = match.end()
+    depth = 1
+    end = start
+    while end < len(header) and depth:
+        char = header[end]
+        slashes = len(header[:end]) - len(header[:end].rstrip('\\'))
+        if slashes % 2 == 0:
+            if char == '{':
+                depth += 1
+            elif char == '}':
+                depth -= 1
+        end += 1
+    if depth:
+        raise ValueError('姓名与联系方式宏的括号不完整')
+    identity = header[start:end - 1]
+    masked = header[:start] + '<identity>' + header[end - 1:]
+    return re.sub(r'\s+', '', masked), identity, text[sections[0].start():]
+
+
+def template_issues(directory):
+    directory = output_paths(directory)
+    source, cls = directory / 'resume.tex', directory / 'resume.cls'
+    if not source.is_file() or not cls.is_file():
+        return ['缺少固定模板的 resume.tex 或 resume.cls，请先初始化']
+    template = ROOT / 'templates'
+    problems = []
+    if cls.read_text(encoding='utf-8').strip() != (template / 'resume.cls').read_text(encoding='utf-8').strip():
+        problems.append('resume.cls 与当前固定模板不同')
+    try:
+        expected, _, _ = fixed_header((template / 'resume.tex').read_text(encoding='utf-8'))
+        actual, identity, body = fixed_header(source.read_text(encoding='utf-8'))
+        if actual != expected:
+            problems.append('页眉、字体或版式设置已偏离当前固定模板')
+        overrides = r'\\(?:setmainfont|setsansfont|setmonofont|setCJK\w*font|linespread|setstretch|fontsize|geometry|newgeometry|restoregeometry|titlespacing|titleformat|setlength|addtolength|renewcommand|vspace|hspace|tiny|scriptsize|footnotesize|small)\b'
+        if re.search(overrides, identity + '\n' + body):
+            problems.append('正文或身份区域包含修改字号、行距、字体或版式的命令')
+    except ValueError as error:
+        problems.append(str(error))
+    return problems
 
 
 def demo():
@@ -247,7 +315,7 @@ def check_pdf(directory, max_pages=1, render=True):
     if report_path.exists():
         report_path.unlink()
     engine = pdf_library()
-    issues, warnings = [], []
+    issues, warnings = template_issues(directory), []
     state_file = guard_path(work / 'build.json')
     state = json.loads(state_file.read_text(encoding='utf-8')) if state_file.is_file() else {}
     if state and state.get('status') != 'compiled':
@@ -273,6 +341,7 @@ def check_pdf(directory, max_pages=1, render=True):
     match = re.search(r'\\name\s*\{([^{}]*)\}', text)
     expected_name = match.group(1).strip() if match else ''
     report = {'passed': False, 'issues': issues, 'warnings': warnings,
+              'workflow_version': WORKFLOW_VERSION,
               'previews': [], 'facts_verified': False, 'pdf': pdf_name}
     with engine.open(pdf_file) as doc:
         report['pages'] = len(doc)
@@ -382,6 +451,7 @@ def privacy():
 
 def main():
     parser = argparse.ArgumentParser(description='AI 自动生成简历：本地辅助工具')
+    parser.add_argument('--version', action='version', version=WORKFLOW_VERSION)
     parser.add_argument('command', choices=['doctor', 'init', 'build', 'demo', 'privacy', 'read', 'check'])
     parser.add_argument('--workspace', type=Path, help='材料所在的工作区；默认使用项目目录')
     parser.add_argument('--input', type=Path, dest='input_path', help='read 命令要读取的材料')
@@ -412,5 +482,6 @@ if __name__ == '__main__':
     if hasattr(sys.stdout, 'reconfigure'):
         sys.stdout.reconfigure(encoding='utf-8', errors='replace')
     raise SystemExit(main())
+
 
 
