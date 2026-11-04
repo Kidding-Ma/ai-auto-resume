@@ -1,31 +1,31 @@
-% Adapted from billryan/resume (MIT). See THIRD_PARTY_NOTICES.md.
+% Overleaf Chinese Resume Template by xiangrongjingujiu, CC BY 4.0.
+% Compatibility font/link substitutions; see THIRD_PARTY_NOTICES.md.
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{resume}[2015/05/25 An elegant Résumé class]
 \LoadClass[11pt]{article}
+
 % disable indent globally
 \setlength{\parindent}{0pt}
 % some general improvements, defines the XeTeX logo
 \RequirePackage{xltxtra}
 % use xifthen
 \RequirePackage{xifthen}
-% use hyperlink for email and url
+% use fontawesome
+\RequirePackage{graphicx}
 \RequirePackage{hyperref}
 \hypersetup{hidelinks}
-\RequirePackage{url}
-\urlstyle{tt}
-% Contact links use plain text to avoid an icon-font dependency.
 % use xcolor for customizing color
-%\RequirePackage[usenames,dvipsnames]{xcolor}
+\RequirePackage[usenames,dvipsnames]{xcolor}
 % loading fonts
 \RequirePackage{fontspec}
 % Main document font
-\setmainfont{lmroman10-regular.otf}[BoldFont=lmroman10-bold.otf,ItalicFont=lmroman10-italic.otf,BoldItalicFont=lmroman10-bolditalic.otf]
+\setmainfont{texgyretermes-regular.otf}[BoldFont=texgyretermes-bold.otf,ItalicFont=texgyretermes-italic.otf,BoldItalicFont=texgyretermes-bolditalic.otf]
 \RequirePackage[
 	a4paper,
-	left=0.8in,
-	right=0.8in,
-	top=0.70in,
-	bottom=0.55in,
+	left=0.7in,
+	right=0.7in,
+	top=0.50in,
+	bottom=0.5in,
 	nohead
 ]{geometry}
 
@@ -36,13 +36,15 @@
 \setlist[itemize]{topsep=0.25em, leftmargin=1.5pc}
 \setlist[enumerate]{topsep=0.25em, leftmargin=1.5pc}
 \RequirePackage[super]{nth}
-\titleformat{\section}         % Customise the \section command
-  {\large\bfseries\raggedright} % Make the \section headers large (\Large),
+
+\titleformat{\section}         % Customise the \section command 
+  {\Large\scshape\raggedright} % Make the \section headers large (\Large),
                                % small capitals (\scshape) and left aligned (\raggedright)
   {}{0em}                      % Can be used to give a prefix to all sections, like 'Section ...'
   {}                           % Can be used to insert code before the heading
   [\titlerule]                 % Inserts a horizontal line after the heading
-\titlespacing*{\section}{0cm}{*1.2}{*0.7}
+\titlespacing*{\section}{0cm}{*1}{*1}
+
 \titleformat{\subsection}
   {\large\raggedright}
   {}{0em}
@@ -60,49 +62,36 @@
 }
 
 \newcommand{\name}[1]{
-  \centerline{\Huge\bfseries{#1}}
-  \vspace{1.25ex}
+  \centerline{\Huge\scshape{#1}} 
+  \vspace{1.2ex}
+}
+\newcommand{\contactInfo}[2]{%
+  \begin{center}\sffamily\large
+  \ifthenelse{\isempty{#1}}{}{手机：#1}%
+  \ifthenelse{\isempty{#1}\OR\isempty{#2}}{}{\quad}%
+  \ifthenelse{\isempty{#2}}{}{邮箱：#2}
+  \end{center}\vspace{1.2ex}
+}
+\newcommand{\otherInfo}[4]{
+  \centerline{\sffamily\large{\ {#1}}
+    \ifthenelse{\isempty{#2}}%
+      { } % if {#2} is empty
+      {\textperiodcentered\ \ {#2} } % homepage, no space before \text...
+    \ifthenelse{\isempty{#3}}%
+      { } % if {#3} is empty
+      {\textperiodcentered\ \ {#3} } % homepage, no space before \text...
+    \ifthenelse{\isempty{#4}}%
+      { } % if {#3} is empty
+      {\textperiodcentered\ \ {#4} }
+  }
+  \vspace{0.7ex}
 }
 
-% defines one's name
-% usage: \name{<name>}
-\newcommand{\nameTest}[1]{
-  {\large\scshape{#1}}
-}
-% defines one's email
-% usage: \email{<email>}
-\newcommand{\email}[1]{\href{mailto:#1}{#1}}
-% defines one's phone
-% usage: \phone{<phone>}
-\newcommand{\phone}[1]{{#1}}
-% defines one's linkedin
-% usage: \linkedin{<linkedin>}
-\newcommand{\linkedin}[2][]{%
-  \ifthenelse{\isempty{#1}}%
-    {\href{#2}{#2}}
-    {\href{#2}{#1}}}
-\newcommand{\linkedinsquare}[2][]{%
-  \ifthenelse{\isempty{#1}}%
-    {\href{#2}{#2}}
-    {\href{#2}{#1}}}
-% defines one's GitHub
-% usage: \github{<github>}
-\newcommand{\github}[2][]{%
-  \ifthenelse{\isempty{#1}}%
-    {\href{#2}{#2}}
-    {\href{#2}{#1}}}
-% defines one's homepage
-% usage: \homepage{<homepage>}
-\newcommand{\homepage}[2][]{%
-  \ifthenelse{\isempty{#1}}%
-    {\href{#2}{#2}}
-    {\href{#2}{#1}}}
-\newcommand{\basicInfo}[1]{
-  \centerline{\sffamily\large{#1}}
-  \vspace{1.5ex}
+\newcommand{\yourphoto}[1]{
+  \hfill \smash{\includegraphics[width={#1}\paperwidth]{images/you.jpg}}
 }
 
 \newcommand{\role}[2]{
   {\par \textit{#1} ~ #2 \par}
-  \vspace{0.85ex}
+  \vspace{0.5ex}
 }

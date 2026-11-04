@@ -1,9 +1,17 @@
 {
   "template": {
-    "source": "https://raw.githubusercontent.com/billryan/resume/master/resume.cls",
-    "retrieved": "2026-11-02",
-    "upstream_sha256": "d08b33c163549c578fc02fe02c06b275b0392a637eb1c2b8f441f3b798670528",
-    "modified": true
+    "source": "https://cn.overleaf.com/latex/templates/chinese-resume-template-zhong-wen-jian-li-mo-ban/fbdypsjmgwbb",
+    "author": "xiangrongjingujiu",
+    "license": "CC-BY-4.0",
+    "snapshot": "User-provided class-only copy; no personal body or font files included",
+    "source_class_utf8_sha256": "89010e3b52d6fd06f3f6f79fd5eff4fc0b6d3fb60143e7856a2cd2cff58ee76c",
+    "compatibility_changes": [
+      "TeX Gyre Termes from TeX distribution",
+      "Fandol Song/Hei fallback instead of bundled Adobe fonts",
+      "wrapping contact line",
+      "symmetric photo header keeps page-centred name"
+    ],
+    "visual_parameters": "11pt A4, 0.7in sides, 0.5in top/bottom, original title/section spacing"
   },
   "skill": {
     "source": "https://github.com/auberginewly/resume-project-miner",
@@ -17,5 +25,39 @@
       "references/role_profiles.md": "e283096f205bf928122f303a0eca4dfc6a9bb96ea81ec0e9afb9518697b9d6ed",
       "scripts/collect_repo_evidence.sh": "973368444efd270ddf509554e9c8c21855d0744f6096db287a530122f640f602"
     }
-  }
+  },
+  "writing_references": [
+    {
+      "repository": "reactive-resume/reactive-resume",
+      "stars_at_review": 45317,
+      "reviewed": "2026-11-04",
+      "license": "MIT",
+      "files": [
+        {
+          "path": "plugins/reactive-resume/skills/resume-bullet-writer/SKILL.md",
+          "blob_sha": "0988a3c7c09af7bcfd9b67e89e3f1ed3d3396207"
+        },
+        {
+          "path": "plugins/reactive-resume/skills/resume-writer/SKILL.md",
+          "blob_sha": "8ff1428d59bd0d3739531cff44cd984ac311f787"
+        }
+      ]
+    },
+    {
+      "repository": "Paramchoudhary/ResumeSkills",
+      "stars_at_review": 3026,
+      "reviewed": "2026-11-04",
+      "license": "MIT",
+      "files": [
+        {
+          "path": "skills/resume-bullet-writer/SKILL.md",
+          "blob_sha": "ee1140fd79fe23170f226518ae12f6a2855c94be"
+        },
+        {
+          "path": "skills/resume-quantifier/SKILL.md",
+          "blob_sha": "7e6152b5f62de7ecc43d53a14c6ab9ca8b15d1f0"
+        }
+      ]
+    }
+  ]
 }

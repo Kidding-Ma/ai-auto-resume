@@ -1,20 +1,18 @@
 # 第三方内容与修改
 
-## resume-project-miner
+## 简历模板
 
-来源：[auberginewly/resume-project-miner](https://github.com/auberginewly/resume-project-miner)，作者 auberginewly。
+来源：[Chinese Resume Template](https://cn.overleaf.com/latex/templates/chinese-resume-template-zhong-wen-jian-li-mo-ban/fbdypsjmgwbb)，作者 xiangrongjingujiu，展示页许可 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)，[许可全文](https://creativecommons.org/licenses/by/4.0/legalcode)。本次从用户提供的该模板类文件快照恢复原排版参数；没有复制真人正文、照片或商业字体。保留作者署名和许可链接，未暗示作者认可本项目。
 
-位于 skills/resume-project-miner，保留原始 MIT LICENSE。以本机安装的公开版本为快照，未复制任何用户材料。具体版本摘要见 provenance.json。
+兼容改动：字体路径改为发行版提供的 TeX Gyre Termes；中文用 Fandol 宋体与黑体替代原 Adobe 字体；去掉未使用的图标字体依赖；联系方式允许换行；照片预留对称空间避免姓名偏移。字号、页边距和章节规则恢复原模板参数。templates/resume.tex 的正文是虚构示例。
 
-## LaTeX 模板
+早期版本基于 [billryan/resume](https://github.com/billryan/resume) 的 MIT 类文件；原始许可继续保留于 licenses/billryan-resume-MIT.txt 以说明历史来源。字体及宏包由用户的 TeX 发行版提供，按各自许可使用，不重新分发商业字体。
 
-来源：https://github.com/billryan/resume ，MIT；原始许可证完整保留于 licenses/billryan-resume-MIT.txt。
+## 已内置的项目经历 Skill
 
-排版参考：Overleaf 上由 xiangrongjingujiu 发布的 Chinese Resume Template（中文简历模板）：
-https://cn.overleaf.com/latex/templates/chinese-resume-template-zhong-wen-jian-li-mo-ban/fbdypsjmgwbb
+[auberginewly/resume-project-miner](https://github.com/auberginewly/resume-project-miner)，MIT。原始 LICENSE 和快照摘要保留，不含任何用户材料。
 
-Overleaf 展示页标注 CC BY 4.0。本项目从 billryan/resume 的 MIT 上游获取类文件，未复制该展示页的示例正文、照片、Adobe 字体或字体附件。templates/resume.tex 的虚构正文为本项目新增。
+## 写作方法参考
 
-本项目对 resume.cls 的修改：将相对字体文件路径改为发行版提供的 Latin Modern（按字体文件名加载，避免依赖系统字体缓存）；移除对 Fontin SmallCaps 文件的依赖；移除 FontAwesome 图标依赖，个人主页和社交链接使用文字；标题改为粗体并收紧章节间距。中文通过 ctex + Fandol 字体处理，不要求商业字体。resume.tex 新增可选照片排版，照片由用户自行提供，仅保存在本地 output 中。
+[Reactive Resume](https://github.com/reactive-resume/reactive-resume)，作者 Amruth Pillai；[ResumeSkills](https://github.com/Paramchoudhary/ResumeSkills)，版权方 Resume Skills。均为 MIT，许可证原文保留于 licenses/reactive-resume-MIT.txt 和 licenses/resume-skills-MIT.txt。本项目按中文简历场景重写了采用的方法，没有复制完整 skill 或示例事实。选择及未采用规则见 [sources.md](docs/sources.md)。
 
-宏包和字体由用户的 TeX 发行版按各自许可安装，不在本项目重新分发。

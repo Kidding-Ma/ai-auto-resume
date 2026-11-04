@@ -50,3 +50,9 @@
 !/tests/test_helpers.py
 !/docs/banner.svg
 !/docs/README.en.md
+
+!/docs/writing-rules.md
+!/docs/sources.md
+!/tests/test_layout.py
+!/licenses/reactive-resume-MIT.txt
+!/licenses/resume-skills-MIT.txt

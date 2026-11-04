@@ -8,3 +8,6 @@
 4. 提交前用 `git diff --cached` 检查待公开内容，包含模板来源和许可证。
 
 不要提交 AI 编造的性能数字、真实求职者样本或没有授权的模板与字体。
+
+
+模板修改必须运行布局测试：安装 PyMuPDF、Pillow 并确认 XeLaTeX 可用，再执行 `python -m unittest discover -s tests -p test_layout.py -v`。测试检查无照片、JPG、PNG 和材料稀少的情况；视觉改动还要查看渲染图。GitHub 的 layout 任务会安装依赖并运行相同检查。
