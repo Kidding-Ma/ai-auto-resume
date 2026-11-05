@@ -13,7 +13,7 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKSPACE = None
-WORKFLOW_VERSION = '2026-11-04.3'
+WORKFLOW_VERSION = '2026-11-05.1'
 
 def workspace_root():
     return WORKSPACE if WORKSPACE is not None else ROOT
