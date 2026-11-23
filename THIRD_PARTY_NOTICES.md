@@ -27,15 +27,22 @@
 | [Reactive Resume](https://github.com/reactive-resume/reactive-resume)，Amruth Pillai | 先整理事实，按经历安排内容，用具体行动和真实结果写项目 | [MIT](licenses/reactive-resume-MIT.txt) |
 | [ResumeSkills](https://github.com/Paramchoudhary/ResumeSkills)，Resume Skills | 检查每条描述是否说清做了什么、怎么做、有什么结果 | [MIT](licenses/resume-skills-MIT.txt) |
 
-采用的方法已改写成适合中文简历的[写作规则](docs/writing-rules.md)，无需额外安装这两个项目。保留有证据的行动、做法和结果，不采用“每条必须有数字”或无依据估算指标的建议；多轮访谈简化为最多一轮关键事实确认。参考版本记录在 [provenance.json](provenance.json)，使用者无需安装这些参考项目。
+在 [简历写作 skill](skills/write-resume/SKILL.md) 中，简历条目优先写本人行动和可核实结果。缺少数字时写交付物，冲突集中确认一次。[版本记录](provenance.json)列出早期参考文件。
 
-## 流程和润色参考
+## 职业中心指南
 
-- 参考 [RenderCV](https://github.com/rendercv/rendercv) 的命令行工作方式，编译和检查可用一条命令完成。遇到缺字或溢出时指出相关日志。
-- 参考 [Resume Matcher](https://github.com/srbhr/Resume-Matcher) 的岗位定向思路和 PDF 文字检查。岗位相关内容从用户已有经历中取材，生成后检查 PDF 能否提取文字。
-- 参考 [Humanizer](https://github.com/blader/humanizer) 和 [Humanizer-zh](https://github.com/op7418/Humanizer-zh) 的精简方法，删掉套话、翻译腔和机械句式，保留清楚的原句。
-- 参考 [Academic Humanizer](https://github.com/AIScientists-Dev/academic-humanizer) 的保真润色原则，保留原意、数字、术语和结论的确定程度。简历中直接改写有问题的句子，保留原本清楚的句子。该项目面向论文和基金申请，见 [Nature 新闻报道](https://www.nature.com/articles/d41586-026-02105-3)。
+- Harvard Mignone Center for Career Success 建议用事实和具体动作写简历，按重要性排列栏目。本项目允许有扎实成果的竞赛经历提前。 [Harvard 简历指南](https://careerservices.fas.harvard.edu/resources/create-a-strong-resume/)
+- MIT Career Advising & Professional Development 用任务、动作和成果帮助读者判断贡献，也建议有足够相关材料才用两页。这里先删重复，第二页从完整条目开始，保持固定字号。 [写经历](https://capd.mit.edu/resources/resumes-writing-about-your-skills/) · [取舍和篇幅](https://capd.mit.edu/resources/career-toolkit-crafting-an-effective-resume/)
 
-以上是思路参考。本项目独立实现，无需安装这些项目。
+## 构建、展示与润色
 
-本项目新增的代码和文档使用 [MIT 许可](LICENSE)。模板及引用内容按上面各自的许可使用，原作者不因此代表或认可本项目。[版本记录](provenance.json)保留了参考文件的标识。
+| 来源 | 采用的方法 | 许可 |
+| --- | --- | --- |
+| RenderCV 团队（rendercv） | 用一条命令生成并指出错误。公开成品可与输入对照。 | [MIT](https://github.com/rendercv/rendercv/blob/main/LICENSE) |
+| Resume Matcher，Saurabh Rai 和贡献者 | 按用户给的招聘要求组织已有经历，导出后检查 PDF 文本。 | [Apache-2.0](https://github.com/srbhr/Resume-Matcher/blob/main/LICENSE) |
+| Awesome CV，posquit0 和贡献者 | 首页直接展示可打开的 PDF，方便在试用前查看成品。 | [LPPL-1.3c](https://github.com/posquit0/Awesome-CV/blob/master/LICENCE) |
+| Humanizer，blader | 删掉套话和机械句式，保留清楚的原句。 | [MIT](https://github.com/blader/humanizer/blob/main/LICENSE) |
+| Humanizer-zh，op7418 和贡献者 | 润色中文时保留术语、归属和确定程度。 | [MIT](https://github.com/op7418/Humanizer-zh/blob/main/LICENSE) |
+| Academic Humanizer，AIScientists-Dev | 让措辞与证据强度相符，例如保留测试范围和论文实际状态。 | [MIT](https://github.com/AIScientists-Dev/academic-humanizer/blob/main/LICENSE) |
+
+这些方法由本项目重新表述，相关项目无需安装。本项目新增代码和文档使用 [MIT 许可](LICENSE)，模板和随附内容沿用各自许可。

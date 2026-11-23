@@ -35,14 +35,20 @@ class MaterialTest(unittest.TestCase):
     def test_text_encodings_and_multiple_materials_do_not_overwrite(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp).resolve()
-            first, second = root / 'first.txt', root / 'second.txt'
-            first.write_bytes('教育：示例'.encode('utf-8-sig'))
-            second.write_bytes('技能：中文'.encode('gb18030'))
-            a = resume.extract_material(first, root / 'output')
-            b = resume.extract_material(second, root / 'output')
-            self.assertNotEqual(a, b)
-            self.assertEqual(a.read_text(encoding='utf-8'), '教育：示例')
-            self.assertEqual(b.read_text(encoding='utf-8'), '技能：中文')
+            settings = [
+                ('utf-8-sig', b'', '教育：示例'),
+                ('gb18030', b'', '技能：中文'),
+                ('utf-16-le', b'\xff\xfe', '竞赛：金奖\r\n赛区：北区'),
+                ('utf-16-be', b'\xfe\xff', '项目：回归测试'),
+            ]
+            extracted = {}
+            for encoding, bom, text in settings:
+                source = root / (encoding + '.txt')
+                source.write_bytes(bom + text.encode(encoding))
+                extracted[resume.extract_material(source, root / 'output')] = text
+            self.assertEqual(len(extracted), len(settings))
+            for target, expected in extracted.items():
+                self.assertEqual(target.read_bytes().decode('utf-8'), expected)
 
     def test_empty_docx_is_not_silently_accepted(self):
         with tempfile.TemporaryDirectory() as tmp:

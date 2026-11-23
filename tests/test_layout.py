@@ -17,6 +17,27 @@ ROOT = Path(__file__).resolve().parents[1]
 
 @unittest.skipUnless(shutil.which('xelatex') and fitz, 'requires XeLaTeX and PyMuPDF')
 class LayoutTest(unittest.TestCase):
+    def test_public_sample_pdf_matches_the_current_tex(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = Path(tmp).resolve()
+            target = workspace / 'output'
+            target.mkdir()
+            for filename in ('resume.cls', 'resume.tex'):
+                shutil.copyfile(ROOT / 'templates' / filename, target / filename)
+            run = subprocess.run(
+                [sys.executable, str(ROOT / 'scripts/resume.py'), 'build',
+                 '--check', '--workspace', str(workspace)],
+                capture_output=True, encoding='utf-8', errors='replace', timeout=120,
+            )
+            self.assertEqual(run.returncode, 0, run.stdout + run.stderr)
+            with fitz.open(ROOT / 'docs/preview.pdf') as published, fitz.open(target / 'resume.pdf') as built:
+                self.assertEqual(len(published), 1)
+                self.assertEqual(len(built), 1)
+                self.assertAlmostEqual(published[0].rect.width, 595.28, delta=0.5)
+                self.assertAlmostEqual(published[0].rect.height, 841.89, delta=0.5)
+                public_text = ''.join(published[0].get_text().split())
+                self.assertEqual(public_text, ''.join(built[0].get_text().split()))
+
     def test_page_centre_with_without_photo_and_sparse_content(self):
         from PIL import Image
         for photo in (None, 'photo.jpg', 'photo.png'):

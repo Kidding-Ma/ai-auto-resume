@@ -26,35 +26,29 @@
   \IfFileExists{./photo.png}{\resumewithphoto{./photo.png}}{\resumeidentity}}
 \vspace{-1ex}
 
-\section{教育背景}
-\datedsubsection{\textbf{示例大学} \quad 计算机科学与技术 · 本科}{2022.09 -- 2026.06}
-主修课程：数据结构、数据库系统、计算机网络、操作系统
-
 \section{实习经历}
-\datedsubsection{\textbf{示例科技} \quad 开发实习生}{2025.07 -- 2025.09}
+\datedsubsection{\textbf{汀桥仓储软件工作室} \quad 后端开发实习生}{2025.07 -- 2025.10}
+\textbf{库存导入：批次重试与批量写入}
 \begin{itemize}
-  \item 参与内部工单接口开发，完善创建、分配与处理状态的流转校验，减少非法状态进入后续处理流程。
-  \item 在查询与更新接口补充角色权限检查，明确不同角色的数据访问范围。
-  \item 针对状态流转和越权访问场景编写接口回归用例，支持后续功能修改后的行为检查。
+  \item 负责盘点 CSV 导入。用 MySQL 唯一约束识别同一仓库的重复批次，在同一事务写入库存和完成标记。失败可回滚重试，已完成的批次再次提交时不重复写入。
+  \item 将逐行查商品改为批量查询，每 1,000 行分批写入。遇到无效 SKU 或数量时返回错误行号并保留原库存，仓管修正后可以重传。
+  \item 用 JUnit 检查同批次并发提交、提交前中断和成功后重传，核对最终库存与批次状态。
+  \item 在同一测试机导入同一份 10 万行 CSV，改动前后各测 5 次，耗时中位数从 54 秒降至 19 秒。
 \end{itemize}
 
 \section{项目经历}
-\datedsubsection{\textbf{校园预约系统} \quad 课程项目}{2025.03 -- 2025.06}
-\textbf{技术栈：}Java、Spring Boot、MySQL、Redis
+\datedsubsection{\textbf{文件备份校验工具} \quad 独立项目}{2025.11 -- 2026.02}
 \begin{itemize}
-  \item 面向校园场地预约场景，实现创建、查询与取消预约的接口，完成从提交到状态查看的基本流程。
-  \item 设计预约记录与时段数据表，通过事务与唯一约束校验同一时段的重复提交，保持预约数据一致。
-  \item 将异常情况统一转换为明确的接口响应，方便前端区分时段冲突、权限不足和参数错误。
+  \item 用 Go 编写命令行工具，将本地文件增量备份到移动硬盘。按相对路径记录 SHA-256，重跑时只跳过存在且通过校验的目标文件。
+  \item 先把数据写入临时文件，通过校验后在目标目录改名。整批成功才更新备份清单，复制中断时仍可用上次的清单重跑。
+  \item 在测试中终止复制进程，验证重跑会跳过完整文件、重传未完成的文件，并能发现手工截断的目标文件。
 \end{itemize}
+
+\section{教育背景}
+\datedsubsection{\textbf{澄汀理工学院} \quad 计算机科学与技术 · 本科}{2022.09 -- 2026.06}
 
 \section{专业技能}
-\begin{itemize}
-  \item 熟悉 Java 基础，能够使用 Spring Boot 开发 REST 接口并编写参数与权限校验。
-  \item 使用 MySQL 设计数据表与索引，理解事务、唯一约束与基本查询优化方法。
-  \item 使用 Redis 实现缓存与过期控制，使用 Git 管理代码、定位变更。
-\end{itemize}
+Java、Go、Spring Boot、MySQL、JUnit
 
-\section{补充说明}
-本页为虚构示例，仅展示排版。人物、机构与经历不对应真实求职者。
+\datedline{}{虚构样例}
 \end{document}
-

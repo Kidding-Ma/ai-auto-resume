@@ -16,6 +16,7 @@
 !/skills/resume-project-miner/agents/
 !/skills/resume-project-miner/references/
 !/skills/resume-project-miner/scripts/
+!/skills/write-resume/
 !/.gitattributes
 !/.github/ISSUE_TEMPLATE/bug.yml
 !/.github/ISSUE_TEMPLATE/idea.yml
@@ -43,6 +44,7 @@
 !/skills/resume-project-miner/references/resume_writing_rules.md
 !/skills/resume-project-miner/references/role_profiles.md
 !/skills/resume-project-miner/scripts/collect_repo_evidence.sh
+!/skills/write-resume/SKILL.md
 !/templates/resume.cls
 !/templates/resume.tex
 !/tests/test_helpers.py
@@ -50,6 +52,7 @@
 !/docs/README.en.md
 
 !/docs/writing-rules.md
+!/docs/validation.md
 !/tests/test_layout.py
 !/licenses/reactive-resume-MIT.txt
 !/licenses/resume-skills-MIT.txt

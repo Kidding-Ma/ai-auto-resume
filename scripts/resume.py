@@ -1,6 +1,7 @@
 """Local helpers. No AI API, credentials or upload functionality. Python 3.10+."""
 from pathlib import Path
 import argparse
+import codecs
 import re
 import shutil
 import subprocess
@@ -13,7 +14,7 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKSPACE = None
-WORKFLOW_VERSION = '2026-11-23.1'
+WORKFLOW_VERSION = '2026-11-23.2'
 
 def workspace_root():
     return WORKSPACE if WORKSPACE is not None else ROOT
@@ -289,10 +290,13 @@ def extract_material(source, directory):
             print('Word 中有图片：文字提取不等于识别图片，AI 需要另行查看。')
     elif suffix in {'.txt', '.md'}:
         data = source.read_bytes()
-        try:
-            text = data.decode('utf-8-sig')
-        except UnicodeDecodeError:
-            text = data.decode('gb18030')
+        if data.startswith((codecs.BOM_UTF16_LE, codecs.BOM_UTF16_BE)):
+            text = data.decode('utf-16')
+        else:
+            try:
+                text = data.decode('utf-8-sig')
+            except UnicodeDecodeError:
+                text = data.decode('gb18030')
     elif suffix == '.pdf':
         engine = pdf_library()
         with engine.open(source) as doc:
@@ -306,7 +310,7 @@ def extract_material(source, directory):
     work = work_directory(directory)
     key = hashlib.sha256(str(source).encode('utf-8')).hexdigest()[:12]
     target = guard_path(work / ('material-' + key + '.txt'))
-    target.write_text(text, encoding='utf-8')
+    target.write_text(text, encoding='utf-8', newline='')
     print('已提取为 UTF-8 文本:', target)
     print('请让 AI 读取这个文件；不用把全部内容打印到终端。')
     return target
@@ -396,7 +400,7 @@ def check_pdf(directory, max_pages=1, render=True):
         issues.append('缺少本次编译日志')
     elif first_layout_error(log.read_text(encoding='utf-8', errors='replace')):
         issues.append('编译日志存在溢出或缺字')
-    if any(sample in text for sample in ('林小满', 'lin@example.com', '示例大学')):
+    if any(sample in text for sample in ('林小满', 'lin@example.com', '澄汀理工学院', '虚构样例')):
         warnings.append('存在模板示例文字，请确认已替换')
     if re.search(r'[（(]', text):
         warnings.append('存在括号，请逐个核对是否必要')
