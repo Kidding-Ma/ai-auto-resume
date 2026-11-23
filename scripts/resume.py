@@ -13,7 +13,7 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKSPACE = None
-WORKFLOW_VERSION = '2026-11-05.1'
+WORKFLOW_VERSION = '2026-11-23.1'
 
 def workspace_root():
     return WORKSPACE if WORKSPACE is not None else ROOT
@@ -75,6 +75,10 @@ def init():
             print('保留已有文件:', dest)
     print('初始 tex 含虚构示例。请让 AI 依据工作区材料改写后再投递。')
     return 0
+
+
+def first_layout_error(log):
+    return re.search(r'^(?:Overfull \\[hv]box|Missing character:).*$', log, re.MULTILINE)
 
 
 def compile_at(directory):
@@ -145,9 +149,11 @@ def compile_at(directory):
         print('缺少编译日志，无法检查本次 PDF。')
         return 1
     log = logfile.read_text(encoding='utf-8', errors='replace')
-    if re.search(r'Overfull \\[hv]box|Missing character:', log):
+    problem = first_layout_error(log)
+    if problem:
         pdf.unlink()
-        print('排版检查失败：发现溢出或缺字，本次 PDF 未作为成品保留。')
+        print('排版检查失败:', problem.group(0)[:240])
+        print('详见:', logfile)
         return 1
     pages = re.search(r'Output written on .*?\((\d+) page', log)
     print('已编译:', pdf)
@@ -343,6 +349,8 @@ def check_pdf(directory, max_pages=1, render=True):
     report = {'passed': False, 'issues': issues, 'warnings': warnings,
               'workflow_version': WORKFLOW_VERSION,
               'previews': [], 'facts_verified': False, 'pdf': pdf_name}
+    # Use text spans for both extraction and geometry, without decoding image blocks.
+    text_flags = engine.TEXTFLAGS_TEXT & ~getattr(engine, 'TEXT_CID_FOR_UNKNOWN_UNICODE', 0)
     with engine.open(pdf_file) as doc:
         report['pages'] = len(doc)
         if len(doc) > max_pages:
@@ -361,12 +369,13 @@ def check_pdf(directory, max_pages=1, render=True):
                 if abs(offset) > 1:
                     issues.append('姓名没有相对页面居中')
             for i, page in enumerate(doc):
-                page_text = page.get_text()
-                if not page_text.strip():
-                    issues.append('存在无法提取文字的页面')
-                spans = [span for block in page.get_text('dict')['blocks']
+                spans = [span for block in page.get_text('dict', flags=text_flags)['blocks']
                          for line in block.get('lines', []) for span in line['spans']
                          if span['text'].strip()]
+                if not spans:
+                    issues.append(f'第 {i + 1} 页无法提取文字')
+                elif any('\ufffd' in span['text'] for span in spans):
+                    issues.append(f'第 {i + 1} 页提取文字有乱码，请检查字体或字符映射')
                 for span in spans:
                     box = engine.Rect(span['bbox'])
                     if box.x0 < -1 or box.y0 < -1 or box.x1 > page.rect.width + 1 or box.y1 > page.rect.height + 1:
@@ -385,7 +394,7 @@ def check_pdf(directory, max_pages=1, render=True):
     log = guard_path(directory / log_name)
     if not log.is_file():
         issues.append('缺少本次编译日志')
-    elif re.search(r'Overfull \\[hv]box|Missing character:', log.read_text(encoding='utf-8', errors='replace')):
+    elif first_layout_error(log.read_text(encoding='utf-8', errors='replace')):
         issues.append('编译日志存在溢出或缺字')
     if any(sample in text for sample in ('林小满', 'lin@example.com', '示例大学')):
         warnings.append('存在模板示例文字，请确认已替换')
@@ -455,8 +464,14 @@ def main():
     parser.add_argument('command', choices=['doctor', 'init', 'build', 'demo', 'privacy', 'read', 'check'])
     parser.add_argument('--workspace', type=Path, help='材料所在的工作区；默认使用项目目录')
     parser.add_argument('--input', type=Path, dest='input_path', help='read 命令要读取的材料')
-    parser.add_argument('--max-pages', type=int, default=1, help='check 允许的页数；默认 1')
+    parser.add_argument('--check', action='store_true', help='build 成功后自动检查并生成预览')
+    parser.add_argument('--max-pages', type=int, default=1, help='排版检查允许的页数，默认 1')
     args = parser.parse_args()
+    if args.check and args.command != 'build':
+        parser.error('--check 只能用于 build')
+    should_check = args.command == 'check' or args.check
+    if should_check and args.max_pages < 1:
+        parser.error('--max-pages 必须大于 0')
     global WORKSPACE
     if args.workspace is not None:
         WORKSPACE = args.workspace.resolve()
@@ -468,9 +483,11 @@ def main():
                 parser.error('read 需要 --input 材料文件路径')
             extract_material(args.input_path, workspace_root() / 'output')
             return 0
-        if args.command == 'check':
-            if args.max_pages < 1:
-                parser.error('--max-pages 必须大于 0')
+        if should_check:
+            if args.check:
+                result = build()
+                if result:
+                    return result
             return check_pdf(workspace_root() / 'output', max_pages=args.max_pages)
         return globals()[args.command]()
     except (ValueError, OSError, RuntimeError, zipfile.BadZipFile, ET.ParseError, subprocess.CalledProcessError) as error:

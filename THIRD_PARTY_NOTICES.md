@@ -29,4 +29,13 @@
 
 采用的方法已改写成适合中文简历的[写作规则](docs/writing-rules.md)，无需额外安装这两个项目。保留有证据的行动、做法和结果，不采用“每条必须有数字”或无依据估算指标的建议；多轮访谈简化为最多一轮关键事实确认。参考版本记录在 [provenance.json](provenance.json)，使用者无需安装这些参考项目。
 
+## 流程和润色参考
+
+- 参考 [RenderCV](https://github.com/rendercv/rendercv) 的命令行工作方式，编译和检查可用一条命令完成。遇到缺字或溢出时指出相关日志。
+- 参考 [Resume Matcher](https://github.com/srbhr/Resume-Matcher) 的岗位定向思路和 PDF 文字检查。岗位相关内容从用户已有经历中取材，生成后检查 PDF 能否提取文字。
+- 参考 [Humanizer](https://github.com/blader/humanizer) 和 [Humanizer-zh](https://github.com/op7418/Humanizer-zh) 的精简方法，删掉套话、翻译腔和机械句式，保留清楚的原句。
+- 参考 [Academic Humanizer](https://github.com/AIScientists-Dev/academic-humanizer) 的保真润色原则，保留原意、数字、术语和结论的确定程度。简历中直接改写有问题的句子，保留原本清楚的句子。该项目面向论文和基金申请，见 [Nature 新闻报道](https://www.nature.com/articles/d41586-026-02105-3)。
+
+以上是思路参考。本项目独立实现，无需安装这些项目。
+
 本项目新增的代码和文档使用 [MIT 许可](LICENSE)。模板及引用内容按上面各自的许可使用，原作者不因此代表或认可本项目。[版本记录](provenance.json)保留了参考文件的标识。

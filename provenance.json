@@ -59,5 +59,37 @@
         }
       ]
     }
+  ],
+  "workflow_references": [
+    {
+      "repository": "rendercv/rendercv",
+      "stars_at_review": 17993,
+      "reviewed": "2026-11-23",
+      "reference": "Command-line generation with actionable validation messages"
+    },
+    {
+      "repository": "srbhr/Resume-Matcher",
+      "stars_at_review": 29384,
+      "reviewed": "2026-11-23",
+      "reference": "Grounded job tailoring and text extraction from the exported PDF"
+    },
+    {
+      "repository": "AIScientists-Dev/academic-humanizer",
+      "stars_at_review": 5912,
+      "reviewed": "2026-11-23",
+      "reference": "Concise editing without changing evidence or claim strength"
+    },
+    {
+      "repository": "blader/humanizer",
+      "stars_at_review": 72491,
+      "reviewed": "2026-11-23",
+      "reference": "Keep the author's meaning while removing filler and formulaic rhythm"
+    },
+    {
+      "repository": "op7418/Humanizer-zh",
+      "stars_at_review": 23593,
+      "reviewed": "2026-11-23",
+      "reference": "Edit Chinese phrasing without changing facts, certainty, or terminology"
+    }
   ]
 }

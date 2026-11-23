@@ -2,6 +2,8 @@
 from pathlib import Path
 import shutil
 import subprocess
+import sys
+import json
 import tempfile
 import unittest
 
@@ -19,7 +21,9 @@ class LayoutTest(unittest.TestCase):
         from PIL import Image
         for photo in (None, 'photo.jpg', 'photo.png'):
             with self.subTest(photo=photo), tempfile.TemporaryDirectory() as tmp:
-                target = Path(tmp).resolve()
+                workspace = Path(tmp).resolve()
+                target = workspace / 'output'
+                target.mkdir()
                 shutil.copyfile(ROOT / 'templates/resume.cls', target / 'resume.cls')
                 source = (ROOT / 'templates/resume.tex').read_text(encoding='utf-8')
                 # Use the fixed header; only replace the public body with sparse facts.
@@ -37,13 +41,16 @@ class LayoutTest(unittest.TestCase):
                 (target / 'resume.tex').write_text(source, encoding='utf-8')
                 if photo:
                     Image.new('RGB', (220, 280), '#91a7bb').save(target / photo)
-                for _ in range(2):
-                    run = subprocess.run(['xelatex', '-no-shell-escape', '-interaction=nonstopmode',
-                                          '-halt-on-error', 'resume.tex'],
-                                         cwd=target, capture_output=True, timeout=120)
-                    self.assertEqual(run.returncode, 0, run.stdout.decode(errors='replace')[-2000:])
-                log = (target / 'resume.log').read_text(encoding='utf-8', errors='replace')
-                self.assertNotRegex(log, r'Overfull \\[hv]box|Missing character:')
+                run = subprocess.run(
+                    [sys.executable, str(ROOT / 'scripts/resume.py'), 'build',
+                     '--check', '--workspace', str(workspace)],
+                    capture_output=True, encoding='utf-8', errors='replace', timeout=120,
+                )
+                self.assertEqual(run.returncode, 0, run.stdout + run.stderr)
+                work = target / '.work'
+                report = json.loads((work / 'checks.json').read_text(encoding='utf-8'))
+                self.assertTrue(report['passed'])
+                self.assertTrue((work / 'page-1.png').is_file())
                 with fitz.open(target / 'resume.pdf') as pdf:
                     self.assertEqual(len(pdf), 1)
                     page = pdf[0]
