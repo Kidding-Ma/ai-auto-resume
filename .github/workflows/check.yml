@@ -14,6 +14,7 @@ jobs:
           python-version: '3.10'
       - run: python -m unittest discover -s tests -v
       - run: python scripts/resume.py privacy
+      - run: python examples/check_inventory.py
 
 
   layout:
@@ -47,7 +48,24 @@ jobs:
           fi
           echo "/Library/TeX/texbin" >> "$GITHUB_PATH"
           sudo /Library/TeX/texbin/tlmgr update --self
-          sudo /Library/TeX/texbin/tlmgr install xetex ctex fandol tex-gyre xltxtra realscripts xunicode xecjk zhnumber xifthen titlesec enumitem hyperref
+          sudo /Library/TeX/texbin/tlmgr install xetex ctex tex-gyre xltxtra realscripts xunicode xecjk zhnumber xifthen titlesec enumitem hyperref
+          # Fandol moved to CTAN's obsolete archive in November 2026.
+          kpse=/Library/TeX/texbin/kpsewhich
+          archive="$RUNNER_TEMP/fandol.zip"
+          for style in Song Hei Kai Fang; do
+            font="Fandol${style}-Regular.otf"
+            if ! "$kpse" "$font"; then
+              if ! test -f "$archive"; then
+                curl --fail --silent --show-error --location --retry 3 --max-time 120 \
+                  https://mirrors.ctan.org/obsolete/fonts/fandol.zip --output "$archive"
+                printf '%s  %s\n' '9dedbe62c740eb9c8234c601ab9537907d81044a7942bbfb1626b089bec83839' "$archive" | shasum -a 256 -c -
+              fi
+              fonts="$("$kpse" -var-value=TEXMFHOME)/fonts/opentype/public/fandol"
+              mkdir -p "$fonts"
+              unzip -j "$archive" "fandol/$font" -d "$fonts"
+              "$kpse" "$font"
+            fi
+          done
           python -m pip install PyMuPDF Pillow
       - name: Check macOS template, text extraction and layout
         run: python -m unittest discover -s tests -v

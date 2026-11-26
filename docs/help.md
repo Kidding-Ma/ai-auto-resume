@@ -20,6 +20,8 @@
 
 安装后重开助手和编辑器。MiKTeX 首次编译可能需要联网补组件，按安装提示处理即可。不需要再装第二套 LaTeX。
 
+如果 TeX Live 报错找不到 `FandolSong-Regular.otf` 等字体，从 [CTAN 的 Fandol 归档](https://ctan.org/tex-archive/obsolete/fonts/fandol) 下载原字体。只补缺失的 `Fandol{Song,Hei,Kai,Fang}-Regular.otf`，放到 `kpsewhich -var-value=TEXMFHOME` 所指目录的 `fonts/opentype/public/fandol/` 下，再用 `kpsewhich FandolSong-Regular.otf` 确认识别。
+
 推荐 VS Code + Codex。OpenCode + DeepSeek、DeepSeek Harness 等助手也可以，运行时需要本地读写和终端权限。
 
 AI 可以直接运行 XeLaTeX，不要求安装编辑器插件。想手动编辑、预览时再用 VS Code 和 LaTeX Workshop，已有可用插件或配置就保留。本项目的 XeLaTeX 配置不需要 Perl。
