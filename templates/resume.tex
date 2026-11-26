@@ -10,8 +10,8 @@
 \hypersetup{pdfauthor={},pdftitle={Resume}}
 % Optional personal photo: output/photo.jpg or output/photo.png.
 \newcommand{\resumeidentity}{%
-  \name{林小满}
-  \contactInfo{}{lin@example.com}
+  \name{许知遥}
+  \contactInfo{}{xu.zhiy@example.com}
 }
 % Equal left/right space keeps the name at the centre of the page.
 \newcommand{\resumewithphoto}[1]{%
@@ -27,28 +27,26 @@
 \vspace{-1ex}
 
 \section{实习经历}
-\datedsubsection{\textbf{汀桥仓储软件工作室} \quad 后端开发实习生}{2025.07 -- 2025.10}
-\textbf{库存导入：批次重试与批量写入}
+\datedsubsection{\textbf{苇岸仓储工作室} \quad 后端开发实习生}{2025.07 -- 2025.10}
+\textbf{库存批量导入原型}
 \begin{itemize}
-  \item 负责盘点 CSV 导入。用 MySQL 唯一约束识别同一仓库的重复批次，在同一事务写入库存和完成标记。失败可回滚重试，已完成的批次再次提交时不重复写入。
-  \item 将逐行查商品改为批量查询，每 1,000 行分批写入。遇到无效 SKU 或数量时返回错误行号并保留原库存，仓管修正后可以重传。
-  \item 用 JUnit 检查同批次并发提交、提交前中断和成功后重传，核对最终库存与批次状态。
-  \item 在同一测试机导入同一份 10 万行 CSV，改动前后各测 5 次，耗时中位数从 54 秒降至 19 秒。
+  \item 用 Python 编写库存导入逻辑。以批次编号设唯一键，将批次登记和库存写入放在同一个 SQLite 事务，支持回滚后重试，防止同一批次重复入库。
+  \item 把逐行查商品改为每 500 行查一次。用本地 SQLite 内存库导入同一批 10,000 条合成记录，商品表查询由 10,000 次降到 20 次，两版库存结果逐条一致。
+  \item 编写回归脚本，在第一条库存更新后传入零数量触发回滚。核对整批库存恢复，修正后成功重传，再次提交同批次时库存保持不变。
 \end{itemize}
 
 \section{项目经历}
-\datedsubsection{\textbf{文件备份校验工具} \quad 独立项目}{2025.11 -- 2026.02}
+\datedsubsection{\textbf{配送账单对账工具} \quad 独立项目}{2025.11 -- 2026.02}
 \begin{itemize}
-  \item 用 Go 编写命令行工具，将本地文件增量备份到移动硬盘。按相对路径记录 SHA-256，重跑时只跳过存在且通过校验的目标文件。
-  \item 先把数据写入临时文件，通过校验后在目标目录改名。整批成功才更新备份清单，复制中断时仍可用上次的清单重跑。
-  \item 在测试中终止复制进程，验证重跑会跳过完整文件、重传未完成的文件，并能发现手工截断的目标文件。
+  \item 用 Python 读取不同格式的配送台账和承运方账单，按运单号匹配，用 Decimal 比对费用。
+  \item 将漏单、重复运单号和有差额的记录输出到待核对 CSV，保留运单号和差额。用自制样本逐项验证这些结果。
 \end{itemize}
 
 \section{教育背景}
-\datedsubsection{\textbf{澄汀理工学院} \quad 计算机科学与技术 · 本科}{2022.09 -- 2026.06}
+\datedsubsection{\textbf{松浦工程学院} \quad 软件工程 · 本科}{2022.09 -- 2026.06}
 
 \section{专业技能}
-Java、Go、Spring Boot、MySQL、JUnit
+Python、SQLite、SQL、CSV 数据处理
 
 \datedline{}{虚构样例}
 \end{document}

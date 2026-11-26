@@ -7,12 +7,13 @@ Start with an old resume, project notes, or a few lines about yourself. Put them
 **[Get started](#get-started)** · [Open the sample PDF](preview.pdf) · [Read the sample notes](../examples/materials.md) · [简体中文](../README.md)
 
 <p align="center">
-  <a href="https://github.com/Kidding-Ma/ai-auto-resume/stargazers"><img src="https://img.shields.io/github/stars/Kidding-Ma/ai-auto-resume?style=flat&amp;logo=github&amp;color=14b8a6" alt="GitHub stars"></a>
   <a href="https://github.com/Kidding-Ma/ai-auto-resume/actions/workflows/check.yml"><img src="https://github.com/Kidding-Ma/ai-auto-resume/actions/workflows/check.yml/badge.svg?branch=main" alt="Project checks"></a>
   <a href="../LICENSE"><img src="https://img.shields.io/badge/Code-MIT-2563eb" alt="Code license: MIT"></a>
 </p>
 
-[![Fictional backend resume showing a warehouse import improvement and a file backup tool.](preview.png)](preview.pdf)
+Codex generated this resume from fictional notes. The inventory import figures come from a reproducible simulation. [Test notes in Chinese](validation.md)
+
+[![Backend resume generated from fictional notes on inventory imports and delivery invoice reconciliation.](preview.png)](preview.pdf)
 
 ## Get started
 
@@ -28,4 +29,4 @@ We recommend **VS Code + Codex**. OpenCode + DeepSeek, DeepSeek Harness, and oth
 
 Open the finished files in `output/` in your original folder. Check the facts and contact details before applying. The scripts run locally. Materials read by a cloud AI assistant are processed by that service.
 
-[Template and writing sources](../THIRD_PARTY_NOTICES.md) · [Validation in Chinese](validation.md) · [Report an issue](https://github.com/Kidding-Ma/ai-auto-resume/issues/new/choose) · [Star the project](https://github.com/Kidding-Ma/ai-auto-resume/stargazers)
+[Template and writing sources](../THIRD_PARTY_NOTICES.md) · [Validation in Chinese](validation.md) · [Report an issue](https://github.com/Kidding-Ma/ai-auto-resume/issues/new/choose)

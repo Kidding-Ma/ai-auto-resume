@@ -162,7 +162,7 @@ class TemplateContractTest(unittest.TestCase):
             root = Path(tmp).resolve()
             self.prepare(root)
             source = root / 'resume.tex'
-            text = source.read_text(encoding='utf-8').replace('林小满', '测试人').replace('lin@example.com', 'test@example.com').replace('文件备份校验工具', '真实课程作业')
+            text = source.read_text(encoding='utf-8').replace('许知遥', '测试人').replace('xu.zhiy@example.com', 'test@example.com').replace('配送账单对账工具', '真实课程作业')
             source.write_text(text, encoding='utf-8')
             self.assertEqual(resume.template_issues(root), [])
 

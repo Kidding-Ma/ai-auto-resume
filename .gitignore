@@ -33,6 +33,7 @@
 !/docs/preview.pdf
 !/docs/preview.png
 !/examples/materials.md
+!/examples/check_inventory.py
 !/licenses/billryan-resume-MIT.txt
 !/provenance.json
 !/scripts/resume.py

@@ -66,8 +66,8 @@ class PDFCheckTest(unittest.TestCase):
         name = 'TEST PERSON'
         original = (resume.ROOT / 'templates/resume.tex').read_text(encoding='utf-8')
         header = original[:original.index(r'\section{')]
-        header = header.replace(r'\name{林小满}', r'\name{' + name + '}')
-        header = header.replace('lin@example.com', '')
+        header = header.replace(r'\name{许知遥}', r'\name{' + name + '}')
+        header = header.replace('xu.zhiy@example.com', '')
         (root / 'resume.tex').write_text(header + r'\section{Test} Fictional content.\end{document}', encoding='utf-8')
         shutil.copyfile(resume.ROOT / 'templates/resume.cls', root / 'resume.cls')
         (root / 'resume.log').write_text('Output written on resume.pdf (1 page)', encoding='utf-8')

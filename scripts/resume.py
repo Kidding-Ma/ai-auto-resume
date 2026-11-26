@@ -400,7 +400,9 @@ def check_pdf(directory, max_pages=1, render=True):
         issues.append('缺少本次编译日志')
     elif first_layout_error(log.read_text(encoding='utf-8', errors='replace')):
         issues.append('编译日志存在溢出或缺字')
-    if any(sample in text for sample in ('林小满', 'lin@example.com', '澄汀理工学院', '虚构样例')):
+    sample_markers = ('许知遥', 'xu.zhiy@example.com', '松浦工程学院', '虚构样例',
+                      '林小满', 'lin@example.com', '澄汀理工学院')
+    if any(marker in text for marker in sample_markers):
         warnings.append('存在模板示例文字，请确认已替换')
     if re.search(r'[（(]', text):
         warnings.append('存在括号，请逐个核对是否必要')

@@ -75,7 +75,7 @@ class LayoutTest(unittest.TestCase):
                 with fitz.open(target / 'resume.pdf') as pdf:
                     self.assertEqual(len(pdf), 1)
                     page = pdf[0]
-                    names = page.search_for('林小满')
+                    names = page.search_for('许知遥')
                     self.assertEqual(len(names), 1)
                     name = names[0]
                     self.assertAlmostEqual((name.x0 + name.x1) / 2, page.rect.width / 2, delta=1)

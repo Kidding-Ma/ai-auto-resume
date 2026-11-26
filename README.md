@@ -7,12 +7,13 @@
 **[开始使用](#开始使用)** · [打开样例 PDF](docs/preview.pdf) · [查看样例材料](examples/materials.md) · [English](docs/README.en.md)
 
 <p align="center">
-  <a href="https://github.com/Kidding-Ma/ai-auto-resume/stargazers"><img src="https://img.shields.io/github/stars/Kidding-Ma/ai-auto-resume?style=flat&amp;logo=github&amp;color=14b8a6" alt="GitHub stars"></a>
   <a href="https://github.com/Kidding-Ma/ai-auto-resume/actions/workflows/check.yml"><img src="https://github.com/Kidding-Ma/ai-auto-resume/actions/workflows/check.yml/badge.svg?branch=main" alt="项目检查"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/Code-MIT-2563eb" alt="Code license: MIT"></a>
 </p>
 
-[![虚构后端简历样例。实习写清库存导入的批次重试与性能验证，个人项目写文件备份校验。](docs/preview.png)](docs/preview.pdf)
+这份简历由 Codex 读取虚构材料后生成，库存导入的数据来自可复跑的模拟实验。[实测记录](docs/validation.md)
+
+[![用虚构材料生成的后端简历，包含库存导入和配送账单对账经历。](docs/preview.png)](docs/preview.pdf)
 
 ## 开始使用
 
@@ -28,4 +29,4 @@
 
 打开原文件夹 `output/` 里的成品，投递前核对事实和联系方式。项目脚本只在本地运行，云端 AI 读取材料时由所用服务处理。
 
-[模板与写作参考](THIRD_PARTY_NOTICES.md) · [验证记录](docs/validation.md) · [反馈问题](https://github.com/Kidding-Ma/ai-auto-resume/issues/new/choose) · [收藏项目](https://github.com/Kidding-Ma/ai-auto-resume/stargazers)
+[模板与写作参考](THIRD_PARTY_NOTICES.md) · [验证记录](docs/validation.md) · [反馈问题](https://github.com/Kidding-Ma/ai-auto-resume/issues/new/choose)

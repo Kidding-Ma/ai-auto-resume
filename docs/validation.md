@@ -1,6 +1,16 @@
 # 验证记录
 
-本轮以 700ab48 为基线。写作由一位执行者按相同的事实核对要求完成，在四个隔离工作区编译虚构样例。首页 PDF 可以从 [TeX](../templates/resume.tex) 直接复跑，也可以让助手从 [样例材料](../examples/materials.md) 重新写一份。
+## 2026-11-26 首页样例实跑
+
+在一个只有 [虚构材料](../examples/materials.md) 的临时文件夹里，用首页原句和当时 GitHub 上的 AGENTS.md（流程版本 2026-11-23.2），由 Codex 读取笔记并新写简历。通过现有脚本执行一次 `init` 和一次 `build --check`。发布的 [PDF](preview.pdf) 和 [TeX](../templates/resume.tex) 就是这次生成的文件，预览图由同一页渲染。
+
+- 实际编译得到一页 A4，姓名中心误差 0.002 pt。检查了整页并提取中文，核对段落和数字，无缺字或溢出。
+- 库存指标可以用 `python examples/check_inventory.py` 复跑。脚本在 SQLite 内存库中对比同一批 10,000 条合成记录。只数商品表的 SELECT，逐行版 10,000 次，按 500 行分组的版本 20 次，最终库存逐条一致。脚本还核对了非法行回滚、修正后重试和重复提交。姓名、单位和经历为虚构，实验没有测线上表现。
+- 这是一次 Codex 上手测试。Windows 上的 `build --check` 用时 7.46 秒，包含编译和预览，不含读取材料或写稿。没有逐请求 token 数据。
+
+## 2026-11-23 多场景回归
+
+以 700ab48 为基线，在四个隔离工作区编译虚构样例。下面的首页样例指 [3e0f087 当时发布的版本](https://github.com/Kidding-Ma/ai-auto-resume/blob/3e0f087c88c6e2b6b9e1a4e8c19881860806812e/docs/preview.pdf)。
 
 | 场景 | 成品 | 核对内容 | Windows 编译与检查 |
 | --- | --- | --- | --- |
